@@ -36,14 +36,24 @@ a{text-decoration:none;color:inherit}
   transition:transform .95s cubic-bezier(.76,0,.24,1);
 }
 #curtain.away{transform:translateY(-100%);pointer-events:none}
-#curtain-ez{
+html.curtain-lock,html.curtain-lock body{overflow:hidden;height:100%}
+#curtain-content{display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;padding:0 24px}
+#curtain-hey{
   font-family:ui-monospace,'SF Mono',Menlo,monospace;
-  font-size:clamp(80px,12vw,160px);font-weight:700;
+  font-size:clamp(48px,9vw,110px);font-weight:700;
   color:#C6FF00;
   text-shadow:0 0 60px rgba(198,255,0,.7),0 0 120px rgba(198,255,0,.3);
-  animation:pulse 1.8s ease-in-out infinite;
+  opacity:0;animation:heyIn .7s ease .2s forwards;
 }
-@keyframes pulse{0%,100%{opacity:1;text-shadow:0 0 60px rgba(198,255,0,.7)}50%{opacity:.7;text-shadow:0 0 100px rgba(198,255,0,.4)}}
+@keyframes heyIn{to{opacity:1}}
+#curtain-type{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:clamp(13px,2vw,18px);letter-spacing:.08em;text-transform:uppercase;
+  color:#999;opacity:0;transition:opacity .3s ease;
+}
+#curtain-type.in{opacity:1}
+#curtain-cursor{color:#C6FF00;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
 @keyframes heroSlideIn{0%{opacity:0;transform:translateX(70px) scale(1.02)}100%{opacity:1;transform:translateX(0) scale(1)}}
 @keyframes portraitReveal{0%{opacity:0;transform:translateY(28px) scale(.96);clip-path:inset(0 0 100% 0)}100%{opacity:1;transform:translateY(0) scale(1);clip-path:inset(0 0 0% 0)}}
 
@@ -260,7 +270,10 @@ footer .fn{color:#fff;font-weight:700}
 <body>
 
 <!-- ── Curtain ─────────────────────────────────────────── -->
-<div id="curtain"><div id="curtain-ez">EZ</div></div>
+<div id="curtain"><div id="curtain-content">
+  <div id="curtain-hey">Hey there!</div>
+  <div id="curtain-type"><span id="curtain-type-text"></span><span id="curtain-cursor">|</span></div>
+</div></div>
 
 <!-- ── Cursor ──────────────────────────────────────────── -->
 <div id="cursor"></div>
@@ -272,7 +285,6 @@ footer .fn{color:#fff;font-weight:700}
     <a href="#profile">Profile</a>
     <a href="#portfolio">Portfolio</a>
     <a href="Personal Page.html">Personal</a>
-    <a href="Essia Zarrouk Resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
   </div>
   <div class="nav-contact"><a href="#contact">Contact ↗</a></div>
 </nav>
@@ -452,32 +464,63 @@ function addBig(el){
 document.querySelectorAll('a,button').forEach(addBig);
 
 // ── Page load ─────────────────────────────────────────────
-function playIntro(){
+let curtainDismissed = false;
+function dismissCurtain(){
+  if(curtainDismissed) return;
+  curtainDismissed = true;
+  document.documentElement.classList.remove('curtain-lock');
+  // Curtain away
+  document.getElementById('curtain').classList.add('away');
+  setTimeout(()=>{ document.getElementById('curtain').style.display='none'; }, 1000);
+  // Nav in
   setTimeout(()=>{
-    // Curtain away
-    document.getElementById('curtain').classList.add('away');
-    setTimeout(()=>{ document.getElementById('curtain').style.display='none'; }, 1000);
-    // Nav in
-    setTimeout(()=>{
-      const nav=document.getElementById('nav');
-      nav.classList.add('in'); nav.style.opacity='1'; nav.style.transform='translateY(0)';
-    },200);
-    // Hero reveals staggered
-    setTimeout(()=>{
-      const hmeta=document.getElementById('hmeta'), wl1=document.getElementById('wl1'), wl2=document.getElementById('wl2');
-      hmeta.classList.add('in'); hmeta.style.opacity='1';
-      wl1.classList.add('in'); wl1.style.opacity='1'; wl1.style.transform='translateY(0)';
-      wl2.classList.add('in'); wl2.style.opacity='1'; wl2.style.transform='translateY(0)';
-    },300);
-    setTimeout(()=>{
-      const hsub=document.getElementById('hsub');
-      hsub.classList.add('in'); hsub.style.opacity='1';
-    },600);
-    setTimeout(()=>{
-      const sarrow=document.getElementById('sarrow');
-      sarrow.classList.add('in'); sarrow.style.opacity='.45';
-    },800);
-  }, 1100);
+    const nav=document.getElementById('nav');
+    nav.classList.add('in'); nav.style.opacity='1'; nav.style.transform='translateY(0)';
+  },200);
+  // Hero reveals staggered
+  setTimeout(()=>{
+    const hmeta=document.getElementById('hmeta'), wl1=document.getElementById('wl1'), wl2=document.getElementById('wl2');
+    hmeta.classList.add('in'); hmeta.style.opacity='1';
+    wl1.classList.add('in'); wl1.style.opacity='1'; wl1.style.transform='translateY(0)';
+    wl2.classList.add('in'); wl2.style.opacity='1'; wl2.style.transform='translateY(0)';
+  },300);
+  setTimeout(()=>{
+    const hsub=document.getElementById('hsub');
+    hsub.classList.add('in'); hsub.style.opacity='1';
+  },600);
+  setTimeout(()=>{
+    const sarrow=document.getElementById('sarrow');
+    sarrow.classList.add('in'); sarrow.style.opacity='.45';
+  },800);
+}
+function playIntro(){
+  document.documentElement.classList.add('curtain-lock');
+  // Type out the subtitle after "Hey there!" fades in
+  setTimeout(()=>{
+    const typeWrap = document.getElementById('curtain-type');
+    const typeText = document.getElementById('curtain-type-text');
+    typeWrap.classList.add('in');
+    const full = 'swipe to learn more about my world';
+    let i = 0;
+    const typer = setInterval(()=>{
+      i++;
+      typeText.textContent = full.slice(0, i);
+      if(i >= full.length) clearInterval(typer);
+    }, 45);
+  }, 900);
+  // Dismiss on swipe/scroll/click/key
+  window.addEventListener('wheel', dismissCurtain, {passive:true, once:true});
+  window.addEventListener('touchmove', dismissCurtain, {passive:true, once:true});
+  document.getElementById('curtain').addEventListener('click', dismissCurtain, {once:true});
+  function keyHandler(e){
+    if(e.key==='ArrowDown' || e.key==='PageDown' || e.key===' '){
+      dismissCurtain();
+      window.removeEventListener('keydown', keyHandler);
+    }
+  }
+  window.addEventListener('keydown', keyHandler);
+  // Safety net so the intro never gets permanently stuck
+  setTimeout(dismissCurtain, 8000);
 }
 if(document.readyState==='complete') playIntro();
 else window.addEventListener('load', playIntro);
