@@ -1,0 +1,1124 @@
+<meta charset="utf-8">
+<title>VEIL — Campaign Intelligence</title>
+<style>
+  :root{
+    --bg:#EEF0F1; --surface:#FFFFFF; --surface-2:#E4E7E9; --surface-3:#DADEE1;
+    --ink:#14161A; --ink-2:#4B4F56; --ink-3:#7A7F87;
+    --border:#D6DADD; --border-strong:#C2C7CB;
+    --accent:#A6702C; --accent-ink:#FFFFFF; --accent-soft:#EFE1CB; --accent-soft-ink:#6B4A1C;
+    --steel:#3E6478; --steel-soft:#DDE7EA;
+    --good:#2F8F5B; --good-soft:#DCEFE2;
+    --warn:#B9791E; --warn-soft:#F5E6CA;
+    --crit:#C13B3B; --crit-soft:#F7DEDE;
+    --shadow: 0 1px 2px rgba(20,22,26,.06), 0 8px 24px -12px rgba(20,22,26,.14);
+    --radius: 3px;
+    --font-display: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#131418; --surface:#1B1D22; --surface-2:#23262C; --surface-3:#2B2E35;
+      --ink:#EDEDEF; --ink-2:#B8BAC0; --ink-3:#7D818A;
+      --border:#2E3138; --border-strong:#393D45;
+      --accent:#D5A257; --accent-ink:#1B1508; --accent-soft:#332A18; --accent-soft-ink:#E6C793;
+      --steel:#8FB3C6; --steel-soft:#1E2C32;
+      --good:#5CB98A; --good-soft:#183226;
+      --warn:#E0AC4D; --warn-soft:#33270F;
+      --crit:#E2685F; --crit-soft:#391E1D;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#131418; --surface:#1B1D22; --surface-2:#23262C; --surface-3:#2B2E35;
+    --ink:#EDEDEF; --ink-2:#B8BAC0; --ink-3:#7D818A;
+    --border:#2E3138; --border-strong:#393D45;
+    --accent:#D5A257; --accent-ink:#1B1508; --accent-soft:#332A18; --accent-soft-ink:#E6C793;
+    --steel:#8FB3C6; --steel-soft:#1E2C32;
+    --good:#5CB98A; --good-soft:#183226;
+    --warn:#E0AC4D; --warn-soft:#33270F;
+    --crit:#E2685F; --crit-soft:#391E1D;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+  }
+  :root[data-theme="light"]{
+    --bg:#EEF0F1; --surface:#FFFFFF; --surface-2:#E4E7E9; --surface-3:#DADEE1;
+    --ink:#14161A; --ink-2:#4B4F56; --ink-3:#7A7F87;
+    --border:#D6DADD; --border-strong:#C2C7CB;
+    --accent:#A6702C; --accent-ink:#FFFFFF; --accent-soft:#EFE1CB; --accent-soft-ink:#6B4A1C;
+    --steel:#3E6478; --steel-soft:#DDE7EA;
+    --good:#2F8F5B; --good-soft:#DCEFE2;
+    --warn:#B9791E; --warn-soft:#F5E6CA;
+    --crit:#C13B3B; --crit-soft:#F7DEDE;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--accent-soft-ink); }
+  a{ color:inherit; }
+  h1,h2,h3,h4{ margin:0; text-wrap:balance; font-family:var(--font-display); font-weight:700; letter-spacing:-.01em; }
+  p{ margin:0; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font-family:inherit; }
+  .mono{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+
+  /* ---- ruler strip ---- */
+  .ruler{
+    height:20px; display:flex; align-items:flex-end; overflow:hidden;
+    border-bottom:1px solid var(--border); background:var(--surface-2);
+    padding:0 0 3px 0;
+  }
+  .ruler .tick{ flex:1 0 auto; width:50px; border-left:1px solid var(--border-strong); height:7px; position:relative; }
+  .ruler .tick:nth-child(6n+1){ height:11px; }
+  .ruler .label{
+    position:sticky; left:12px; font-family:var(--font-mono); font-size:9px; letter-spacing:.08em;
+    color:var(--ink-3); text-transform:uppercase; padding-left:12px; white-space:nowrap;
+  }
+
+  /* ---- shell ---- */
+  .shell{ display:flex; min-height:100vh; }
+  .sidebar{
+    width:220px; flex:0 0 220px; background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; padding:18px 16px 14px; border-bottom:1px solid var(--border); }
+  .brand .mark{
+    width:28px; height:28px; border-radius:2px; background:var(--accent); color:var(--accent-ink);
+    display:grid; place-items:center; font-family:var(--font-display); font-weight:700; font-size:13px;
+    position:relative; flex:none;
+  }
+  .brand .mark::before, .brand .mark::after{ content:""; position:absolute; width:5px; height:5px; border:1px solid var(--accent-ink); opacity:.55; }
+  .brand .mark::before{ top:2px; left:2px; border-right:0; border-bottom:0; }
+  .brand .mark::after{ bottom:2px; right:2px; border-left:0; border-top:0; }
+  .brand .word{ font-family:var(--font-display); font-weight:800; font-size:16px; letter-spacing:.02em; line-height:1.1; }
+  .brand .sub{ font-family:var(--font-mono); font-size:10px; color:var(--ink-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  nav.sections{ padding:10px 8px; display:flex; flex-direction:column; gap:1px; flex:1; }
+  nav.sections button{
+    all:unset; cursor:pointer; display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:2px;
+    font-size:12.5px; color:var(--ink-2); font-weight:600;
+  }
+  nav.sections button svg{ flex:none; opacity:.75; }
+  nav.sections button:hover{ background:var(--surface-2); color:var(--ink); }
+  nav.sections button.active{ background:var(--accent-soft); color:var(--accent-soft-ink); }
+  nav.sections button.active svg{ opacity:1; }
+  nav.sections .n{ font-family:var(--font-mono); font-size:10px; color:var(--ink-3); width:14px; }
+  nav.sections button.active .n{ color:var(--accent-soft-ink); }
+
+  .sidebar-foot{ padding:12px 16px 16px; border-top:1px solid var(--border); }
+  .health-row{ display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--ink-3); margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--font-mono); }
+  .health-bar{ display:flex; height:6px; border-radius:2px; overflow:hidden; background:var(--surface-2); }
+  .health-bar span{ height:100%; }
+  .health-legend{ display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; }
+  .health-legend .item{ display:flex; align-items:center; gap:5px; font-size:10.5px; color:var(--ink-3); }
+  .health-legend .dot{ width:6px; height:6px; border-radius:1px; }
+
+  .main{ flex:1; min-width:0; }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:16px 28px; border-bottom:1px solid var(--border); background:var(--surface);
+    position:sticky; top:0; z-index:5;
+  }
+  .topbar h1{ font-size:19px; }
+  .topbar .tagline{ font-family:var(--font-mono); font-size:11px; color:var(--ink-3); margin-top:2px; }
+  .topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:99px;
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    font-family:var(--font-mono); white-space:nowrap;
+  }
+  .pill.good{ background:var(--good-soft); color:var(--good); }
+  .pill.warn{ background:var(--warn-soft); color:var(--warn); }
+  .pill.crit{ background:var(--crit-soft); color:var(--crit); }
+  .pill.steel{ background:var(--steel-soft); color:var(--steel); }
+  .pill.accent{ background:var(--accent-soft); color:var(--accent-soft-ink); }
+  .pill.neutral{ background:var(--surface-2); color:var(--ink-3); }
+  .pill .dot{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+
+  .content{ padding:24px 28px 80px; max-width:1180px; }
+  .section{ display:none; flex-direction:column; gap:22px; }
+  .section.active{ display:flex; }
+
+  .eyebrow{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); font-weight:700; margin-bottom:4px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .section-head h2{ font-size:20px; }
+  .section-head .meta{ font-family:var(--font-mono); font-size:11px; color:var(--ink-3); }
+
+  /* card w/ technical corner ticks */
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 18px; position:relative; box-shadow:var(--shadow);
+  }
+  .card::before,.card::after{ content:""; position:absolute; width:7px; height:7px; pointer-events:none; }
+  .card::before{ top:-1px; left:-1px; border-top:1.5px solid var(--accent); border-left:1.5px solid var(--accent); }
+  .card::after{ bottom:-1px; right:-1px; border-bottom:1.5px solid var(--accent); border-right:1.5px solid var(--accent); }
+  .card.flat{ box-shadow:none; }
+  .card.flat::before,.card.flat::after{ display:none; }
+
+  .grid{ display:grid; gap:14px; }
+  .grid.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .grid.cols-4{ grid-template-columns:repeat(4,1fr); }
+  @media (max-width:900px){ .grid.cols-4{grid-template-columns:repeat(2,1fr);} .grid.cols-3{grid-template-columns:repeat(2,1fr);} .grid.cols-2{grid-template-columns:1fr;} }
+
+  .hero-card{ padding:26px 26px; }
+  .hero-card .core{ font-size:21px; font-weight:700; font-family:var(--font-display); line-height:1.35; max-width:62ch; }
+  .hero-card .core b{ color:var(--accent); font-style:normal; }
+  .hero-card .sub{ margin-top:10px; color:var(--ink-2); max-width:70ch; font-size:13.5px; }
+
+  .stat-tile{ display:flex; flex-direction:column; gap:6px; }
+  .stat-tile .label{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3); }
+  .stat-tile .value{ font-family:var(--font-mono); font-size:26px; font-weight:600; letter-spacing:-.02em; }
+  .stat-tile .delta{ font-size:11.5px; color:var(--ink-2); }
+  .stat-tile .delta.up{ color:var(--good); }
+
+  h3.h{ font-size:14px; font-weight:700; margin-bottom:2px; }
+  h4.h{ font-size:12.5px; font-weight:700; }
+  .muted{ color:var(--ink-3); }
+  .body-text{ color:var(--ink-2); font-size:13px; line-height:1.6; }
+
+  /* priority list */
+  .priority-row{ display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+  .priority-row:last-child{ border-bottom:none; }
+  .priority-row .num{ font-family:var(--font-mono); font-size:12px; color:var(--ink-3); width:18px; flex:none; padding-top:1px; }
+  .priority-row .body{ flex:1; min-width:0; }
+  .priority-row .title-line{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .priority-row .title{ font-weight:700; font-size:13px; }
+  .priority-row .why{ color:var(--ink-2); font-size:12.5px; margin-top:3px; }
+
+  /* progress bar */
+  .bar-row{ display:flex; align-items:center; gap:12px; }
+  .bar-row .name{ width:150px; flex:none; font-size:12.5px; font-weight:600; }
+  .bar-track{ flex:1; height:8px; background:var(--surface-2); border-radius:99px; position:relative; overflow:visible; }
+  .bar-fill{ height:100%; border-radius:99px; background:var(--accent); position:relative; }
+  .bar-target{ position:absolute; top:-3px; width:2px; height:14px; background:var(--ink); opacity:.4; }
+  .bar-nums{ font-family:var(--font-mono); font-size:11px; color:var(--ink-3); width:120px; text-align:right; flex:none; }
+  .bar-nums b{ color:var(--ink); font-weight:700; }
+
+  /* workstream card */
+  .ws-card{ display:flex; flex-direction:column; gap:10px; }
+  .ws-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .ws-top .name{ font-size:13.5px; font-weight:700; }
+  .ws-owner{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.04em; }
+  .ws-kpi{ font-size:12px; color:var(--ink-2); }
+  .ws-track{ height:5px; background:var(--surface-2); border-radius:99px; }
+  .ws-track span{ display:block; height:100%; border-radius:99px; background:var(--accent); }
+  .ws-foot{ display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:11px; color:var(--ink-3); }
+  .ws-blockers{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  th{ text-align:left; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); font-weight:600; padding:0 12px 8px 0; border-bottom:1px solid var(--border-strong); }
+  td{ padding:10px 12px 10px 0; border-bottom:1px solid var(--border); vertical-align:top; color:var(--ink-2); }
+  tr:last-child td{ border-bottom:none; }
+  td.strong{ color:var(--ink); font-weight:600; }
+  .table-wrap{ overflow-x:auto; }
+
+  .chip{ display:inline-flex; padding:3px 9px; border-radius:99px; background:var(--surface-2); color:var(--ink-2); font-size:11px; }
+  .chip-row{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  .timeline{ display:flex; gap:0; border-top:1px solid var(--border-strong); position:relative; }
+  .phase{ flex:1; padding:16px 16px 0; border-left:1px solid var(--border); position:relative; }
+  .phase:first-child{ border-left:none; }
+  .phase::before{ content:""; position:absolute; top:-1px; left:-1px; width:9px; height:2px; background:var(--border-strong); }
+  .phase.current::before{ background:var(--accent); width:100%; left:0; }
+  .phase .dates{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3); }
+  .phase .pname{ font-weight:700; font-size:13.5px; margin:3px 0 8px; }
+  .phase ul{ display:flex; flex-direction:column; gap:6px; }
+  .phase li{ font-size:12px; color:var(--ink-2); padding-left:12px; position:relative; }
+  .phase li::before{ content:""; position:absolute; left:0; top:6px; width:5px; height:1px; background:var(--ink-3); }
+  @media (max-width:900px){ .timeline{ flex-direction:column; } .phase{ border-left:none; border-top:1px solid var(--border); padding:16px 0 0; } .phase::before{ display:none; } }
+
+  .stack-bar{ display:flex; height:26px; border-radius:3px; overflow:hidden; border:1px solid var(--border); }
+  .stack-seg{ display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:10.5px; font-weight:700; color:#fff; }
+  .stack-legend{ display:flex; gap:16px; margin-top:10px; flex-wrap:wrap; }
+  .stack-legend .item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-2); }
+  .stack-legend .sw{ width:10px; height:10px; border-radius:2px; }
+
+  .accordion-item{ border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); overflow:hidden; }
+  .accordion-item + .accordion-item{ margin-top:8px; }
+  .accordion-head{ all:unset; box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; width:100%; padding:13px 16px; cursor:pointer; font-weight:700; font-size:13px; }
+  .accordion-head .chevron{ transition:transform .15s ease; color:var(--ink-3); }
+  .accordion-item.open .accordion-head .chevron{ transform:rotate(90deg); }
+  .accordion-body{ display:none; padding:0 16px 16px; }
+  .accordion-item.open .accordion-body{ display:block; }
+  .accordion-body pre{
+    white-space:pre-wrap; font-family:var(--font-mono); font-size:12px; line-height:1.7; color:var(--ink-2);
+    background:var(--surface-2); border-radius:2px; padding:14px; margin:0; border:1px solid var(--border);
+  }
+
+  .quote-block{ font-family:var(--font-mono); font-size:12px; color:var(--ink-2); background:var(--surface-2); border-left:2px solid var(--accent); padding:10px 12px; white-space:pre-wrap; line-height:1.6; }
+  .callout{ display:flex; gap:10px; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--warn); background:var(--warn-soft); color:var(--warn); font-size:12.5px; align-items:flex-start; }
+  .callout ul{ margin-top:4px; display:flex; flex-direction:column; gap:3px; }
+  .callout li{ list-style:disc; margin-left:16px; display:list-item; }
+
+  .rule-row{ display:grid; grid-template-columns:220px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .rule-row:last-child{ border-bottom:none; }
+  .rule-row .rule{ font-weight:700; font-size:12.5px; }
+  .rule-row .example{ font-size:12.5px; color:var(--ink-2); font-style:italic; }
+  @media (max-width:760px){ .rule-row{ grid-template-columns:1fr; } }
+
+  .scroll-x{ overflow-x:auto; }
+  ::-webkit-scrollbar{ width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:99px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+</style>
+
+<div class="ruler" id="ruler"></div>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">N</div>
+      <div>
+        <div class="word">VEIL</div>
+        <div class="sub">by NOWN</div>
+      </div>
+    </div>
+    <nav class="sections" id="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="health-row"><span>Workstream health</span><span id="healthCount"></span></div>
+      <div class="health-bar" id="healthBar"></div>
+      <div class="health-legend">
+        <span class="item"><span class="dot" style="background:var(--good)"></span>Active</span>
+        <span class="item"><span class="dot" style="background:var(--steel)"></span>Planning</span>
+        <span class="item"><span class="dot" style="background:var(--ink-3)"></span>Not started</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1>Campaign Intelligence — VEIL</h1>
+        <div class="tagline" id="tagline"></div>
+      </div>
+      <div class="topbar-right" id="topbarRight"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+
+  meta: {
+    productName: "VEIL",
+    brand: "NOWN",
+    launchPhase: "Pre-Launch",
+    currentDate: "April 16, 2026",
+    targetLaunch: "June 2026"
+  },
+
+  marketingFramework: {
+    pillars: ["Design", "Build", "Install"],
+    campaignFlow: ["Intrigue", "Reveal", "Proof", "Action"],
+    pillarDesc: {
+      Design: "VEIL starts with your idea — not a catalogue. Upload any image into VEIL Studio, set the parameters, and see your one-of-one pattern in minutes. The design belongs to the project.",
+      Build: "15 years of manufacturing precision, built into the software. Every VEIL panel is laser-cut, powder-coated to your RAL, and shipped made-to-order — production-ready from first click.",
+      Install: "100% of your design drops into any standard 600×1200 metric or 2'×4' imperial grid. No field modification. No contractor headaches. Simply Elevated."
+    },
+    flowDesc: {
+      Intrigue: "Before VEIL is named — tease the concept. Pattern-led content. 'Something new from NOWN.' Social and email.",
+      Reveal: "Name VEIL. Show VEIL Studio. Architect sees the product for the first time with full context. Website live + announcement post.",
+      Proof: "Installed work, architect testimonials, DXF exports, case studies, spec sheets. Trust is built here.",
+      Action: "Sample request CTA. VEIL Studio configuration. Quote request. The conversion phase — every channel drives one action."
+    }
+  },
+
+  positioning: {
+    coreIdea: "Customized by you. Elevated by our engineering. Standardized to fit.",
+    paradox: "YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.",
+    taglineOptions: [
+      "YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.",
+      "Drawn in minutes, built in days, shipped in weeks.",
+      "One-of-one. Dropped into any grid.",
+      "Custom-perforated. Made to order. Simply Elevated.",
+      "You design. We make. You install."
+    ],
+    currentTagline: "YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.",
+    oneLiner: "VEIL is a custom-perforated metal wall and ceiling system, designed by YOU in our online interface. Drawn in minutes, built in days, shipped in weeks — and installed on any standard 600×1200 metric or 2'×4' imperial grid.",
+    differentiator: "Every other perforated system starts with a manufacturer's catalogue. VEIL starts with your idea — upload any image, configure your one-of-one pattern in VEIL Studio, and get a production-ready panel laser-cut and powder-coated to your RAL. Custom without compromise. Made to order. Simply Elevated.",
+    pillars: [
+      { id: 1, name: "YOUR IDEA", headline: "Converting design ideas into architecture. In minutes.", body: "Upload any image into VEIL Studio and convert graphic design ideas into architectural interiors in minutes — all generated in our online interface. The design is yours from the first click." },
+      { id: 2, name: "OUR TOOLS", headline: "15 years of manufacturing. Built into the software.", body: "VEIL Studio is built on 15 years of experience designing and manufacturing for the world's most demanding clients. Every parameter you set is production-ready." },
+      { id: 3, name: "YOUR SIGNATURE DESIGN", headline: "100% your design. Rationalized to fit any grid.", body: "100% of your design, rationalized to fit in any 600×1200 or 2'×4' grid system. Laser-cut, powder-coated, shipped — and dropped into any standard grid. One-of-one." },
+      { id: 4, name: "Simply Elevated", headline: "Simple to spec. Simple to install. Precisely engineered.", body: "Your vision, not your inbox, gets filled. VEIL drops into any standard 600×1200 metric or 2'×4' imperial grid — no field modification, no contractor headaches." }
+    ],
+    voiceGuidelines: [
+      { rule: "Three-beat rhythm. X. Y. Z.", example: "'YOUR IDEA. OUR TOOLS. YOUR SIGNATURE DESIGN.' — three is the number at every altitude: roof, tagline, pillars, body, closer." },
+      { rule: "Time units land the point.", example: "'Drawn in minutes. Built in days. Shipped in weeks.' Use whenever describing process or speed." },
+      { rule: "Specifics over abstractions.", example: "'Pick any RAL' beats 'fully customizable colors.' '600×1200 metric or 2′×4′' beats 'fits standard grids.' Always name the real thing." },
+      { rule: "Use approved verbs only.", example: "Design: pick · drop in · dial in. Make: laser-cut · powder-coated · shipped. Install: drops into 600×1200 grid. Never 'mounts to' or 'fits'." },
+      { rule: "Introduce VEIL Studio with context on first mention.", example: "'our online tool, VEIL Studio.' Never assume the reader knows what it is." },
+      { rule: "Never use floating 'engineering' — always pair it.", example: "'acoustic engineering' or 'structural engineering.' Never 'our engineering expertise' alone." },
+      { rule: "Headers use imperative verbs.", example: "DESIGN / BUILD / INSTALL — not Designed / Building / Installation." },
+      { rule: "Kill SaaS and generic B2B language.", example: "Never 'solutions', 'leverage', 'synergy', 'world-class'. Use 'VEIL', 'VEIL Studio', 'your design', 'your panel'." }
+    ],
+    missingData: [
+      "No competitive analysis available.",
+      "No installed VEIL project imagery confirmed yet.",
+      "Production fonts need updating — board note: 'FONTS NEED TO BE UPDATED'."
+    ]
+  },
+
+  social: {
+    platform: "LinkedIn (primary) + Instagram",
+    period: "Dec 2025 – Apr 2026",
+    followers: 2344, followersStart: 2061, newFollowers: 290,
+    posts: 42, impressions: 36129, clicks: 13166,
+    engagementRate: 32.7, avgImpressions: 860, avgClicks: 313, avgEngagementPerPost: 0.78,
+    instagram: { posts: 19, impressions: 9326, reach: 4417, likes: 292, comments: 6, engagementRate: 3.63 },
+    topCities: ["Amsterdam", "Istanbul", "London", "Dubai", "Berlin", "Rotterdam", "Paris"],
+    audiencePrimary: "Male 25–44, Female 25–44",
+    insights: [
+      "Collaboration/story posts beat product announcements on engagement rate.",
+      "Amsterdam + Istanbul lead — European architect hubs are core.",
+      "Avg 860 impressions/post — VEIL target is 1,500+.",
+      "313 clicks/post is strong — audience is warm and active.",
+      "Instagram reach (4,417) is smaller — use for visual seeding, not conversion.",
+      "No VEIL-specific content in top performers yet — launch has a clear runway."
+    ]
+  },
+
+  email: {
+    period: "Apr 2025 – Apr 2026",
+    sessions: 564, engagedSessions: 348, engagementRate: 61.7,
+    avgEngagementTime: "1m 08s", keyEventRate: 4.08,
+    materialSamplesRequested: 1, quotesRequested: 1,
+    insights: [
+      "61.7% engagement rate is excellent — list is highly qualified.",
+      "Only 1 material sample request from 564 sessions — CTA placement must improve.",
+      "Resources page: 1m42s avg time — long content converts this audience.",
+      "Vapor line gets strong email traffic — position VEIL alongside it.",
+      "Contact page has 90% key event rate — anyone who reaches it acts.",
+      "100 file download events from 7 users — spec sheets are high-value content."
+    ]
+  },
+
+  workstreams: [
+    { id: "positioning", name: "Positioning & Branding", status: "active", progress: 75, owner: "Marketing", kpi: "Finalised pillars + tagline", keyActions: ["Apply new messaging to all channel copy", "Create VEIL one-pager from locked pillars", "Brief agency on DESIGN / BUILD / INSTALL narrative", "Update website copy to VEIL Studio language"], blockers: [], phase: "Pre-Launch" },
+    { id: "launch", name: "Launch Campaign", status: "planning", progress: 30, owner: "Marketing", kpi: "Launch date confirmed + campaign live", keyActions: ["Define launch week", "Build pre-launch content sequence", "Set paid budget", "Coordinate launch day"], blockers: ["Launch date not confirmed"], phase: "Foundation" },
+    { id: "website", name: "Website & Blog", status: "planning", progress: 20, owner: "Marketing/Dev", kpi: "VEIL product page live + SEO articles published", keyActions: ["Create VEIL product page", "Add DOSE embed", "Write 3 SEO blog articles", "Add VEIL to navigation"], blockers: ["WordPress dev access needed"], phase: "Foundation" },
+    { id: "social-organic", name: "Social Organic", status: "active", progress: 40, owner: "Marketing", kpi: "2 posts/week, 1,200+ avg impressions", keyActions: ["Build 8-week content calendar", "Create VEIL reveal post", "Document DOSE on video", "Architect feature story"], blockers: [], phase: "Pre-Launch" },
+    { id: "social-paid", name: "Social Paid", status: "not-started", progress: 0, owner: "Marketing", kpi: "First ad set live at launch", keyActions: ["Confirm budget (€200/mo)", "Build audience targeting", "Create 3 ad creatives", "Set up LinkedIn Lead Gen form"], blockers: ["Budget not confirmed"], phase: "Launch" },
+    { id: "email", name: "Email Marketing", status: "planning", progress: 15, owner: "Marketing", kpi: "VEIL launch sequence live", keyActions: ["Build 5-email launch sequence", "Segment architect list", "Set up automation", "Test sample CTA"], blockers: [], phase: "Pre-Launch" },
+    { id: "influencer", name: "Influencer & Creator", status: "not-started", progress: 0, owner: "Marketing", kpi: "5 creators briefed on VEIL", keyActions: ["Build creator target list", "Design seeding kit", "Create creator brief", "Initiate outreach"], blockers: ["No influencer list provided"], phase: "Pre-Launch" },
+    { id: "pr", name: "PR & Magazines", status: "planning", progress: 10, owner: "Marketing", kpi: "3 editorial pitches submitted in 60 days", keyActions: ["Build press list", "Write editorial angle", "Prepare press images", "Submit to ArchDaily / Dezeen / Detail"], blockers: [], phase: "Launch" },
+    { id: "pinterest", name: "Pinterest Boards", status: "not-started", progress: 0, owner: "Marketing", kpi: "3 themed boards live with 30+ pins", keyActions: ["Create board structure", "Curate pattern inspiration", "Pin DOSE visuals", "SEO-optimize titles"], blockers: [], phase: "Launch" },
+    { id: "seo", name: "SEO & Organic Search", status: "not-started", progress: 0, owner: "Marketing/Dev", kpi: "Ranking for 3+ target keywords in 90 days", keyActions: ["Keyword research", "Optimize VEIL page", "Publish 3 SEO articles", "Build backlinks via PR"], blockers: ["Website dev access needed"], phase: "Post-Launch" },
+    { id: "samples", name: "Sample Conversion", status: "planning", progress: 20, owner: "Marketing/Sales", kpi: "10 qualified sample requests in first 30 days", keyActions: ["Sample CTA in every email", "Optimize sample request page", "Build DOSE → sample flow", "Follow up within 24h"], blockers: [], phase: "Launch" },
+    { id: "coordination", name: "Project Coordination", status: "active", progress: 45, owner: "Essia", kpi: "No blockers older than 5 days", keyActions: ["Weekly status review", "Track blocker resolution", "Align with Jason on DOSE", "Update dashboard weekly"], blockers: ["Key source files (Goals, Positioning, Campaign) were empty"], phase: "Ongoing" }
+  ],
+
+  goals: [
+    { id: "followers", name: "LinkedIn Followers", baseline: 2344, target: 3000, current: 2344, period: "By Oct 2026", notes: "~70/month organic. Paid accelerates to 150/month." },
+    { id: "impressions", name: "Avg Impressions / Post", baseline: 860, target: 1500, current: 860, period: "By Q3 2026", notes: "VEIL visual content should drive 75% increase." },
+    { id: "email-sessions", name: "Email Sessions / Send", baseline: 47, target: 100, current: 47, period: "Per send by Q4 2026", notes: "Architect segment can double baseline." },
+    { id: "sample-requests", name: "Sample Requests", baseline: 1, target: 10, current: 1, period: "First 30 days post-launch", notes: "Requires: sample CTA every email + website optimized." },
+    { id: "content-output", name: "Content Pieces Published", baseline: 0, target: 20, current: 3, period: "By launch week", notes: "Social posts, blog articles, email sequence, press." },
+    { id: "ig-reach", name: "Instagram Reach / Post", baseline: 232, target: 600, current: 232, period: "By Q3 2026", notes: "VEIL visuals should 2–3x baseline reach." }
+  ],
+
+  paidAds: {
+    totalBudget: 200,
+    allocation: [
+      { name: "LinkedIn (Lead Gen — Sample Request)", pct: 50, goal: "Architect sample requests via Lead Gen form" },
+      { name: "Instagram (Awareness — Reveal Phase)", pct: 30, goal: "VEIL pattern reach + brand awareness" },
+      { name: "LinkedIn (Retargeting — Website visitors)", pct: 20, goal: "Re-engage warm leads from VEIL page" }
+    ],
+    targeting: "Architects, Interior Designers, Facade Consultants. Job titles: Architect, Senior Architect, Project Architect, Design Director. Geo: Amsterdam, London, Paris, Dubai, Berlin.",
+    adFormats: ["LinkedIn Single Image + Lead Gen Form", "Instagram Reel (DOSE process, 15s)", "LinkedIn Document (VEIL spec sheet)"],
+    campaignFlow: {
+      Intrigue: "Instagram awareness — DOSE pattern visual. No product name yet. €60.",
+      Reveal: "LinkedIn Lead Gen Form — 'Request your VEIL sample'. €70.",
+      Proof: "LinkedIn retargeting — architect testimonial / installed work. €40.",
+      Action: "Both platforms — direct sample request CTA. €30."
+    },
+    testIdeas: [
+      "A/B: 'Request Sample' vs. 'Configure VEIL' CTA on LinkedIn Lead Gen",
+      "A/B: Pattern visual vs. installed context photo",
+      "Test Tuesday vs. Thursday send on LinkedIn ads"
+    ]
+  },
+
+  campaign: {
+    phases: [
+      { name: "Foundation", dates: "Apr 16–30", status: "current", flow: "Intrigue", actions: ["Lock positioning, tagline, messaging pillars", "Create DOSE sample visuals for content", "Brief website developer on VEIL page", "Build press and creator contact lists", "Write email sequence copy"] },
+      { name: "Pre-Launch", dates: "May 1–31", status: "upcoming", flow: "Intrigue → Reveal", actions: ["8 teaser posts (pattern-led, architect-led, process)", "2 pre-launch emails to architect segment", "VEIL product page live in draft", "Brief 3 architecture creators", "Submit 2 editorial pitches"] },
+      { name: "Launch Week", dates: "June 2026 (TBC)", status: "upcoming", flow: "Reveal + Proof", actions: ["VEIL product page live with DOSE embed", "Launch email to full list", "Paid LinkedIn + Instagram ads go live", "Publish launch story / narrative", "Push sample request CTA all channels"] },
+      { name: "Post-Launch", dates: "July–Sept 2026", status: "upcoming", flow: "Proof + Action", actions: ["Publish 3 SEO blog articles", "First VEIL project case study", "Optimize email sample conversion", "Monitor and adjust paid performance", "Creator-generated content amplification"] }
+    ],
+    contentThemes: [
+      { theme: "The Pattern Series", desc: "One post/week: DOSE-generated pattern + source image. Show the transformation.", channels: ["Instagram", "LinkedIn", "Pinterest"], flow: "Intrigue" },
+      { theme: "Architect Feature", desc: "Interview/mini-feature on an architect using NOWN. Builds credibility for VEIL.", channels: ["LinkedIn", "Email"], flow: "Proof" },
+      { theme: "Process Reveal", desc: "DOSE interface video — no tutorial, just the experience. 'This is what specifying VEIL feels like'.", channels: ["Instagram Reels", "LinkedIn"], flow: "Reveal" },
+      { theme: "The Spec Drop", desc: "Technical post: DXF export, RAL colors, acoustic options. For decision-makers.", channels: ["LinkedIn", "Email"], flow: "Proof" },
+      { theme: "Installed Work", desc: "Any NOWN project featuring VEIL-style panels. Context = credibility.", channels: ["Instagram", "LinkedIn", "Pinterest"], flow: "Proof" }
+    ],
+    missing: ["Launch date not confirmed", "Paid social budget not confirmed (suggested: €200/mo)", "No VEIL-specific installed project imagery", "Creator/influencer list missing", "VEIL product page URL not confirmed"]
+  },
+
+  channels: [
+    { id: "linkedin-organic", name: "LinkedIn", type: "Organic", baseline: { followers: 2344, impressions: 860, engRate: "0.78%" }, target: { followers: 3000, impressions: 1500, engRate: "1.2%" }, strategy: "2 posts/week. 40% pattern/visual, 30% architect story, 20% product/spec, 10% opinion. Tag architects. Always use VEIL Studio-generated visuals for VEIL.", contentRole: "Primary conversion. Drives to product page and sample requests.", testIdeas: ["A/B: pattern-first vs. statement-first captions", "Carousel vs. single image for patterns", "Tagging architects directly vs. hashtag-only"] },
+    { id: "instagram-organic", name: "Instagram", type: "Organic", baseline: { impressions: 490, reach: 232, engRate: "3.63%" }, target: { impressions: 900, reach: 600, engRate: "4.5%" }, strategy: "1 post/week + 2 Stories. Focus: visual impact of VEIL patterns. Reels for DOSE demos — music only, no voiceover. Feed = inspiration, not information.", contentRole: "Top-of-funnel visual discovery. Not a conversion channel.", testIdeas: ["Reel: time-lapse of DOSE image-to-pattern", "Carousel: 5 patterns from 5 cities", "Story poll: 'Which pattern would you specify?'"] },
+    { id: "linkedin-paid", name: "LinkedIn Ads", type: "Paid", baseline: { spend: "€0", cpc: "—", reach: "—" }, target: { cpc: "< €4", reach: "15,000+", leadCVR: "> 8%" }, strategy: "Target: architects, facade consultants, design directors. Geo: Amsterdam, London, Paris, Dubai, Berlin. Format: Single Image + Lead Gen Form. Budget: €100/month (50% of total).", contentRole: "Qualified lead capture — sample requests and DOSE demo sign-ups.", testIdeas: ["Lead Gen Form vs. website click-through", "Pattern visual vs. installed context image", "'Request Sample' vs. 'Configure VEIL' CTA"] },
+    { id: "email", name: "Email (ActiveCampaign)", type: "Owned", baseline: { sessions: 564, engRate: "61.7%", samples: 1 }, target: { engRate: "65%", samples: 10, opens: "35%+" }, strategy: "5-email VEIL launch sequence. Then monthly VEIL update. Sample request CTA in every single send.", contentRole: "Primary conversion. 61.7% engagement rate = list is warm and qualified.", testIdeas: ["Subject: statement vs. question format", "CTA: 'Request Sample' vs. 'Configure Your VEIL'", "Send time: Tuesday vs. Thursday"] },
+    { id: "pinterest", name: "Pinterest", type: "Organic", baseline: { boards: 0, pins: 0 }, target: { boards: 3, pins: 90, views: "5,000+/mo" }, strategy: "3 boards: VEIL Patterns, Architectural Perforations, Spaces by NOWN. 3 new pins/week. SEO-optimized descriptions.", contentRole: "Long-tail SEO discovery. 12+ month compound benefit.", testIdeas: ["Rich pins linked to VEIL product page", "DOSE-generated patterns with 'Configure yours →' CTA"] },
+    { id: "seo", name: "SEO / Organic Search", type: "Organic", baseline: { organicSessions: "unknown", keywords: 0 }, target: { keywords: 5, topTen: "3 terms in 90 days" }, strategy: "Target: 'custom perforated metal panels', 'image to perforation', 'perforated facade configurator'. 3 SEO blog articles. On-page VEIL product page optimization.", contentRole: "Long-term qualified discovery. High-intent searchers.", testIdeas: ["Article: 'How to specify custom perforated panels'", "Article: 'VEIL vs. standard perforation catalogues'", "Article: 'The design process behind a perforated facade'"] }
+  ],
+
+  pr: [
+    { name: "ArchDaily", region: "Global", type: "Online", audience: "Architects, global", hookAngle: "DOSE: the configurator that replaces the catalogue", difficulty: "Medium", priority: "High" },
+    { name: "Dezeen", region: "UK/Global", type: "Online", audience: "Architects, designers", hookAngle: "Design freedom story — architect quote + VEIL visuals", difficulty: "Hard", priority: "High" },
+    { name: "Detail Magazine", region: "Germany", type: "Print + Online", audience: "Architects, DE/EU", hookAngle: "Technical depth — DXF/spec angle with performance story", difficulty: "Medium", priority: "High" },
+    { name: "Frame Magazine", region: "Netherlands", type: "Print + Online", audience: "Designers, EU", hookAngle: "Amsterdam is top fan city — Frame audience is perfect fit", difficulty: "Medium", priority: "High" },
+    { name: "Wallpaper*", region: "UK/Global", type: "Print + Online", audience: "Design community", hookAngle: "Beauty of the pattern — lead with visuals, not tech", difficulty: "Hard", priority: "Medium" },
+    { name: "Azure Magazine", region: "Canada", type: "Print + Online", audience: "Architects, NA", hookAngle: "NOWN origin story + global relevance", difficulty: "Medium", priority: "Medium" },
+    { name: "Interior Design Mag", region: "USA", type: "Print + Online", audience: "Interior designers", hookAngle: "Customisation at scale — new standard for facades", difficulty: "Medium", priority: "Medium" },
+    { name: "WAF", region: "Global", type: "Event/Press", audience: "Architects, global", hookAngle: "Submit VEIL installation for product category award", difficulty: "Low", priority: "Medium" }
+  ],
+
+  influencer: {
+    targetProfile: "Architecture + design process creators. 5K–100K followers. EU and NA. Audience: design professionals, not consumers.",
+    seedingConcept: "The VEIL Design Object: A high-quality A4 perforated metal sample made from a pattern the creator configured themselves via DOSE. Custom packaging. Card: 'This pattern is yours. Configure the rest at nown.com/veil'. Not a gift — an invitation.",
+    outreachSteps: ["Build list of 15–20 target creators", "Follow and engage organically 2 weeks before outreach", "Send personalised DM — reference specific work", "Offer: DOSE access + custom sample object", "Ask: share your configuration process, not a review", "Brief: no scripts — just show DOSE with your own image"],
+    ideas: ["VEIL Pattern Challenge: 5 creators configure a pattern from their own photo. Post same day, cross-promote.", "Architecture school partnership: brief a studio to use DOSE for a facade project.", "Creator-led DOSE walkthrough Reel — no NOWN branding in video, just the process."]
+  },
+
+  brainstormOutputs: {
+    "tagline-directions": "VEIL TAGLINE DIRECTIONS\n\nCORE POSITIONING: Customized by you. Elevated by our engineering. Standardized to fit.\nThe tagline formula drives everything — YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.\nThree beats. Three-beat rhythm is the brand voice. Use it at every altitude.\n\nPRIMARY TAGLINE (locked)\n\"YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.\"\nWhy: The equals sign makes the value exchange explicit. Three beats. Architect is the author. VEIL is the system.\n\nDirection 2 — PROCESS CADENCE\n\"Drawn in minutes, built in days, shipped in weeks.\"\nWhy: Time units are sticky and earned. Maps the full journey. Works for technical and general audiences.\n\nDirection 3 — THE ONE-OF-ONE\n\"One-of-one. Dropped into any grid.\"\nWhy: Names the unique-per-panel claim + the install ease in four words. Strong for spec and contractor audiences.\n\nDirection 4 — BRAND FOUNDATION\n\"Custom-perforated. Made to order. Simply Elevated.\"\nWhy: Three approved vocabulary terms. Parent tagline 'Simply Elevated' closes it. Works for brand-level surfaces.\n\nDirection 5 — SIMPLE CADENCE\n\"You design. We make. You install.\"\nWhy: DESIGN / BUILD / INSTALL in the simplest form. Architect-first framing. Good for onboarding and hero copy.\n\nRECOMMENDATION:\n— Primary: 'YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN.' (product pages, social, email headers)\n— Process story: 'Drawn in minutes, built in days, shipped in weeks.' (campaign and ads)\n— Spec/B2B: 'Custom-perforated. Made to order. Simply Elevated.' (LinkedIn, press, spec sheets)\n— Paid ads: 'You design. We make. You install.' (clear, direct, conversion-optimized)\n\nVOCABULARY (use verbatim):\nDesign verbs: pick · drop in · dial in\nMake verbs: laser-cut · powder-coated · shipped\nInstall verb: drops into 600×1200 grid\nCategory: custom-perforated metal wall and ceiling tile\nTool: VEIL Studio (always with context on first mention)\nUnique claim: one-of-one",
+
+    "instagram-post-ideas": "VEIL INSTAGRAM — 10 POST CONCEPTS\n\n1. THE REVEAL\nVisual: DOSE interface split with resulting panel.\nCaption: \"This started as a photograph. It became a wall. VEIL, coming soon.\"\nFlow: Intrigue\n\n2. THE SOURCE\nVisual: Original image next to perforation output.\nCaption: \"Your reference. Your pattern. No catalogue required.\"\nFlow: Intrigue → Reveal\n\n3. PROCESS REEL (30s)\nNo voiceover. Music only.\nSequence: upload → parameters → pattern → 3D view → DXF export.\nCaption: \"This is DOSE. Try it at nown.com/veil\"\nFlow: Reveal\n\n4. THE PARADOX POST\nVisual: Two panels side by side — identical system, different patterns.\nCaption: \"Same system. Different design. Every time.\"\nFlow: Proof\n\n5. LIGHT & SHADOW\nVisual: Light through perforated panel casting shadow pattern.\nCaption: \"What you design in DOSE, light reveals in the space.\"\nFlow: Intrigue\n\n6. CITY PATTERN SERIES (carousel)\nVisual: 5 panels — from photos of Amsterdam, Istanbul, London, Dubai, Berlin.\nCaption: \"5 cities. 5 patterns. Every city has a VEIL.\"\nFlow: Intrigue → Reveal\n\n7. THE SPEC DROP\nVisual: Close-up panel with overlaid specs.\nCaption: \"2.5mm pitch. 60% density. RAL 9005. Yours to adjust.\"\nFlow: Proof\n\n8. ACOUSTIC LAYER\nVisual: aSoft backer detail.\nCaption: \"Form and function are the same decision in VEIL.\"\nFlow: Proof\n\n9. STORY POLL\n\"Which pattern would you specify?\" — 2 DOSE-generated options.\nFlow: Action (engagement-driving)\n\n10. THE DXF\nVisual: DXF file open (architectural drawing feel).\nCaption: \"Configure. Export. Specify. Production-ready from DOSE.\"\nFlow: Action",
+
+    "email-sequence": "VEIL EMAIL LAUNCH SEQUENCE — 5 EMAILS\n\nEMAIL 1 — THE INTRODUCTION (2 weeks before launch)\nSubject: \"Something new from NOWN. Your kind of new.\"\nContent: One DOSE-generated pattern image. 3 lines of copy. CTA: 'See VEIL'.\nFramework: Intrigue\n\nEMAIL 2 — THE DEMO (1 week before launch)\nSubject: \"This is what specifying VEIL feels like.\"\nContent: Animated GIF or video still of DOSE. 3-step process. CTA: 'Try DOSE'.\nFramework: Reveal\n\nEMAIL 3 — THE STORY (Launch day)\nSubject: \"How one image became a facade.\"\nContent: Short architect story or process case study. Real visuals. CTA: 'Request a sample'.\nFramework: Reveal + Proof\n\nEMAIL 4 — THE SPEC (3 days post-launch)\nSubject: \"VEIL: the numbers behind the design.\"\nContent: Technical summary card. DXF export call-out. Prominent sample CTA.\nFramework: Proof\n\nEMAIL 5 — THE OFFER (7 days post-launch)\nSubject: \"A sample, made from your configuration.\"\nContent: Sample request as the hero action. Custom sample framing.\nCTA: 'Order your VEIL sample' → /request-material-samples/\nFramework: Action\n\nRULES FOR ALL EMAILS:\n— Sample CTA in every send, even if secondary\n— Under 120 words per email\n— One DOSE-generated image per email\n— Statement or tension subject lines, never question marks",
+
+    "pr-hooks": "VEIL PR HOOK DIRECTIONS\n\nFOR ARCHDAILY / DEZEEN (Online, global reach)\nAngle: 'The configurator that replaces the catalogue'\nHook: 'Most architectural perforation starts with a manufacturer's pattern library. VEIL reverses that. Architects upload any image — a photograph, a texture, a sketch — and DOSE translates it into a production-ready DXF. NOWN calls this a standardized customizable product: custom design inside a tested, fabrication-ready system.'\n\nFOR DETAIL MAGAZINE (German, technical audience)\nAngle: 'Precision customisation with structural confidence'\nHook: Lead with DXF workflow, fabrication specs, acoustic options. VEIL on Graphic Perf technical foundation. Include dimensional drawings. Editors here want the numbers.\n\nFOR FRAME MAGAZINE (Netherlands, Amsterdam market)\nAngle: 'A new design object from a new kind of manufacturer'\nHook: 'NOWN is carbon-negative. VEIL is custom. The combination makes a strong material story for Frame's design-material-space intersection.' Amsterdam is NOWN's top fan city — Frame's readership is the audience.\n\nFOR WALLPAPER* (Global, design-luxury)\nAngle: Visual-first. No product pitch.\nHook: Lead with the most beautiful DOSE-generated pattern. Get the image right. The copy is secondary to Wallpaper editors. One paragraph, no jargon.\n\nWHAT MAKES AN EDITOR CARE:\n— An installed project (not a render)\n— An architect willing to comment\n— A genuinely different process story\n— Images that look unlike anything else in the issue",
+
+    "seo-ideas": "VEIL SEO STRATEGY — CONTENT IDEAS\n\nTARGET KEYWORDS (priority order):\n1. 'custom perforated metal panels' — product intent, high commercial value\n2. 'perforated facade design tool' — configurator intent, low competition\n3. 'image to perforation' — unique VEIL capability, own this term\n4. 'architectural metal screen custom' — broad, design-oriented\n5. 'VEIL perforated panels NOWN' — branded, protect it\n\nARTICLE 1 — HOW-TO (high traffic potential)\nTitle: 'How to specify custom perforated metal panels for architectural projects'\nIntent: Architect searching for guidance on custom perforation process.\nStructure: Problem → options → VEIL/DOSE solution → sample CTA.\n\nARTICLE 2 — EDITORIAL (thought leadership + links)\nTitle: 'Why architects are moving away from standard perforation catalogues'\nIntent: Awareness + positioning. Builds links from architecture blogs.\nStructure: Industry problem → shift in expectation → VEIL as natural answer.\n\nARTICLE 3 — COMPARISON (high-intent)\nTitle: 'VEIL vs. standard perforated panels: a specifier's guide'\nIntent: Architect comparing options. High conversion intent.\nStructure: Criteria table → VEIL advantage per criterion → CTA.\n\nQUICK WINS:\n— Optimize VEIL product page title tag and meta description\n— Add alt text to all DOSE-generated pattern images\n— Submit VEIL page to Google Search Console\n— Get ArchDaily article to link back to VEIL product page",
+
+    "outreach-ideas": "VEIL CREATOR OUTREACH IDEAS\n\nTARGET PROFILE:\nArchitecture and interior design creators who document process, not just finished work. 5K–100K followers. EU + NA. They need to be credible to architects, not just popular.\n\nPHASE 1 — SILENT SEEDING (2 weeks before outreach)\nFollow 20 target creators. Like their most technical posts. Leave one genuine comment about their work. No pitch yet.\n\nPHASE 2 — THE DM\nNever start with 'collaboration opportunity'. Start with: 'We've been following your [specific project/post] — the way you [specific observation] is exactly the kind of thinking VEIL was made for.'\nThen: 'We'd like to send you something. No strings, no brief.'\n\nPHASE 3 — THE OBJECT\nSend The VEIL Design Object: custom A4 perforated metal sample, configured with their name or a photo they shared. Custom packaging.\nIncluded card: 'This pattern is yours. Configure the rest.'\n\nPHASE 4 — THE ASK (if they post about receiving it)\nFollow up with DOSE access. Ask if they'd like to configure their own pattern. Suggest: 'Show us what you'd make.'\n\nIDEA: VEIL PATTERN CHALLENGE\n5 creators, same day, each configure a pattern from their own photograph. All post simultaneously. Cross-tag each other. Hashtag: #VEILPattern.\nThis creates a content moment without paid media."
+  },
+
+  dailyPriorities: [
+    { priority: 1, title: "Apply locked VEIL messaging to all channel copy", why: "Tagline and pillars are locked from Miro board. Push 'YOUR IDEA + OUR TOOLS = YOUR SIGNATURE DESIGN' across website, email, social, and ads now.", workstream: "positioning", urgency: "urgent", blocked: false },
+    { priority: 2, title: "Define launch date (target: June 2026)", why: "Without a date, campaign timing, paid budget, and PR pitches can't be planned.", workstream: "launch", urgency: "urgent", blocked: false },
+    { priority: 3, title: "Generate 5 VEIL pattern samples via DOSE", why: "All social, email, and press content needs VEIL-specific visuals. DOSE generates them now.", workstream: "social-organic", urgency: "urgent", blocked: false },
+    { priority: 4, title: "Write VEIL product page brief", why: "The page is the conversion point. Sample requests, DOSE access, quote requests all route through it.", workstream: "website", urgency: "urgent", blocked: false },
+    { priority: 5, title: "Draft first LinkedIn teaser post", why: "Pre-launch content builds anticipation. A pattern teaser can go live this week (Intrigue phase).", workstream: "social-organic", urgency: "normal", blocked: false },
+    { priority: 6, title: "Build VEIL architect email segment", why: "The AC list has 61.7% engagement. A segmented architect send will outperform the general list.", workstream: "email", urgency: "normal", blocked: false },
+    { priority: 7, title: "Restore empty source files (Goals, Positioning, Campaign)", why: "These files were 0 bytes. Restoring them unlocks the full planning framework.", workstream: "coordination", urgency: "urgent", blocked: true },
+    { priority: 8, title: "Set up 3 Pinterest boards", why: "Pinterest has long SEO tail. 2 hours of setup → 18 months of passive discovery.", workstream: "pinterest", urgency: "normal", blocked: false }
+  ],
+
+  thirtyDayPlan: [
+    { week: 1, label: "Week 1 — Foundation", days: "Apr 16–22", tasks: ["Finalize VEIL positioning + tagline", "Define launch date", "Generate 5 DOSE pattern samples", "Write VEIL product page brief"] },
+    { week: 2, label: "Week 2 — Content Sprint", days: "Apr 23–29", tasks: ["Publish VEIL teaser post (LinkedIn + Instagram)", "Draft 5-email launch sequence", "Begin product page copywriting", "Build press contact list (10 pubs)"] },
+    { week: 3, label: "Week 3 — Build", days: "Apr 30–May 6", tasks: ["Product page development starts", "Email #1 sends (VEIL introduction)", "2x social posts — architect story + process video", "Submit first editorial pitch (ArchDaily)"] },
+    { week: 4, label: "Week 4 — Pre-Launch Push", days: "May 7–13", tasks: ["Product page review + QA", "Email #2 sends (DOSE demo)", "Creator outreach (5 DMs)", "Pinterest boards live with 15 pins each", "Define paid ad creative brief"] }
+  ],
+
+  leadScout: {
+    applications: [
+      { id: "AMS-2026-0442", source: "Amsterdam Planning Portal", region: "Amsterdam", country: "Netherlands", status: "Granted", date: "2026-05-14", reference: "AMS-2026-0442", projectName: "Hotel renovation", address: "Prinsengracht 10", buildingType: "Hospitality", description: "Renovation of hotel interiors including ceiling and acoustic works", firm: "Studio Example", developer: "Example Developments", url: "https://example.com/application/AMS-2026-0442", notes: "Good fit for VEIL or acoustic ceiling outreach" },
+      { id: "PAR-2026-8821", source: "Paris Urban Planning", region: "Paris", country: "France", status: "Granted", date: "2026-05-12", reference: "PAR-2026-8821", projectName: "Office refurbishment", address: "12 Rue Example", buildingType: "Office", description: "Interior refurbishment of office building", firm: "Atelier Example", developer: "Example Group", url: "https://example.com/application/PAR-2026-8821", notes: "Potential outreach for SoftSound or VEIL" }
+    ],
+    outreachTasks: [
+      { id: "ot-AMS-0442", applicationId: "AMS-2026-0442", firm: "Studio Example", projectName: "Hotel renovation — Prinsengracht 10, Amsterdam", region: "Amsterdam, Netherlands", buildingType: "Hospitality", relevance: "Hotel interior renovation with ceiling and acoustic works. Hospitality is a core VEIL use case — custom pattern panels for lobbies, corridors, and feature ceilings. Acoustic scope signals openness to specialist ceiling systems.", productAngle: "VEIL acoustic ceiling — custom pattern, aSoft acoustic backer, drops into standard 600x1200 grid. Design-forward alternative to standard acoustic tile. The panel comes from the architect's own image.", outreachMessage: "Subject: VEIL — custom acoustic ceiling panels for Prinsengracht\n\nHi [Name],\n\nWe noticed your hotel renovation on Prinsengracht has been granted. If acoustic ceilings are in scope, VEIL by NOWN lets you configure any image into a custom-perforated metal panel — acoustic backer included, standard grid fit. Drawn in minutes, shipped in weeks.\n\nHappy to send a sample if useful.\n\nBest,\n[Name] · NOWN", dueDate: "2026-05-28", priority: "High" },
+      { id: "ot-PAR-8821", applicationId: "PAR-2026-8821", firm: "Atelier Example", projectName: "Office refurbishment — 12 Rue Example, Paris", region: "Paris, France", buildingType: "Office", relevance: "Interior office refurbishment in Paris — one of NOWN's top target cities. Design-led practices increasingly specify feature walls and acoustic screens for modern offices. VEIL or SoftSound applicable depending on the brief.", productAngle: "VEIL feature wall or acoustic screen — or SoftSound if acoustic performance leads the brief. Paris is in NOWN's top target cities. Office refurbishments are a proven conversion path.", outreachMessage: "Subject: Custom perforated panels for your Paris office project\n\nHi [Name],\n\nSaw your office refurbishment application in Paris. If you're specifying interior fit-out, VEIL by NOWN might be worth a look — architects configure any image into a custom-perforated metal panel via DOSE, our online configurator. Ships production-ready, fits any standard grid.\n\nHappy to share a sample or the DOSE link if relevant to the brief.\n\nBest,\n[Name] · NOWN", dueDate: "2026-05-26", priority: "High" }
+    ],
+    rules: {
+      prioritize: ["Offices", "Hospitality", "Education", "Cultural spaces", "Public buildings", "Healthcare", "Retail / interior fit-outs", "Renovations", "Acoustic-sensitive interiors", "Projects with identified architecture firms"],
+      deprioritize: ["Small residential extensions", "Purely structural works", "Infrastructure-only projects", "Projects with no clear architect or design relevance"]
+    }
+  }
+};
+
+/* ---------------------------------------------------------- */
+/* helpers                                                     */
+/* ---------------------------------------------------------- */
+const $ = (sel, root=document) => root.querySelector(sel);
+const el = (tag, cls, html) => { const n = document.createElement(tag); if(cls) n.className = cls; if(html!==undefined) n.innerHTML = html; return n; };
+const fmt = n => n.toLocaleString('en-US');
+const esc = s => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+const ICONS = {
+  overview: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1.5" width="5.5" height="9" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="9.5" width="5.5" height="5" stroke="currentColor" stroke-width="1.3"/></svg>',
+  positioning: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>',
+  workstreams: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><line x1="2" y1="3" x2="14" y2="3" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="8" x2="10" y2="8" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="13" x2="12" y2="13" stroke="currentColor" stroke-width="1.3"/></svg>',
+  performance: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><line x1="2" y1="14" x2="14" y2="14" stroke="currentColor" stroke-width="1.3"/><rect x="3.5" y="9" width="2.4" height="5" fill="currentColor"/><rect x="7.3" y="5" width="2.4" height="9" fill="currentColor"/><rect x="11.1" y="7" width="2.4" height="7" fill="currentColor"/></svg>',
+  campaign: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  pr: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 12V6l6-3v12L2 12z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 3l6 3v6l-6 3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>',
+  scout: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="10.2" y1="10.2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  vault: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="10" x2="8" y2="11.3" stroke="currentColor" stroke-width="1.2"/></svg>'
+};
+
+const SECTIONS = [
+  { id:'overview', label:'Overview' },
+  { id:'positioning', label:'Positioning & Voice' },
+  { id:'workstreams', label:'Workstreams' },
+  { id:'performance', label:'Performance' },
+  { id:'campaign', label:'Campaign & Paid' },
+  { id:'pr', label:'PR & Influencer' },
+  { id:'scout', label:'Lead Scout' },
+  { id:'vault', label:'Brainstorm Vault' }
+];
+
+/* ---------------------------------------------------------- */
+/* shell chrome                                                */
+/* ---------------------------------------------------------- */
+function buildRuler(){
+  const r = $('#ruler');
+  r.innerHTML = '<span class="label">600 × 1200 MODULE GRID</span>';
+  for(let i=0;i<40;i++) r.appendChild(el('div','tick'));
+}
+
+function buildNav(){
+  const nav = $('#nav');
+  SECTIONS.forEach((s,i)=>{
+    const b = el('button', i===0?'active':'', `<span class="n">${String(i+1).padStart(2,'0')}</span>${ICONS[s.id]}<span>${s.label}</span>`);
+    b.dataset.id = s.id;
+    b.addEventListener('click', ()=> showSection(s.id));
+    nav.appendChild(b);
+  });
+}
+
+function showSection(id){
+  document.querySelectorAll('nav.sections button').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id==='sec-'+id));
+}
+
+function buildTopbar(){
+  $('#tagline').textContent = DATA.positioning.currentTagline;
+  const right = $('#topbarRight');
+  right.innerHTML = `
+    <span class="pill accent"><span class="dot"></span>${esc(DATA.meta.launchPhase)}</span>
+    <span class="pill neutral">Today · ${esc(DATA.meta.currentDate)}</span>
+    <span class="pill steel">Target launch · ${esc(DATA.meta.targetLaunch)}</span>
+  `;
+}
+
+function buildHealth(){
+  const counts = { active:0, planning:0, 'not-started':0 };
+  DATA.workstreams.forEach(w => counts[w.status] = (counts[w.status]||0)+1);
+  const total = DATA.workstreams.length;
+  const bar = $('#healthBar');
+  bar.innerHTML = `
+    <span style="width:${counts.active/total*100}%;background:var(--good)"></span>
+    <span style="width:${counts.planning/total*100}%;background:var(--steel)"></span>
+    <span style="width:${counts['not-started']/total*100}%;background:var(--ink-3)"></span>
+  `;
+  $('#healthCount').textContent = `${counts.active} active / ${total}`;
+}
+
+/* ---------------------------------------------------------- */
+/* section builders                                             */
+/* ---------------------------------------------------------- */
+function sectionWrap(id){
+  const s = el('section','section');
+  s.id = 'sec-'+id;
+  return s;
+}
+
+function buildOverview(){
+  const s = sectionWrap('overview');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">01 — Overview</div><h2>Where VEIL stands today</h2></div>
+      <div class="meta">Prepared for ${esc(DATA.meta.brand)} · ${esc(DATA.meta.currentDate)}</div>
+    </div>
+
+    <div class="card hero-card">
+      <div class="core">${esc(DATA.positioning.oneLiner)}</div>
+      <div class="sub">${esc(DATA.positioning.differentiator)}</div>
+    </div>
+
+    <div class="grid cols-4" id="goalTiles"></div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h3 class="h">Daily priorities</h3>
+        <div class="muted" style="font-size:11.5px;margin-bottom:4px;">Ranked by urgency, ${DATA.dailyPriorities.length} open items</div>
+        <div id="priorityList"></div>
+      </div>
+      <div class="card">
+        <h3 class="h">30-day plan</h3>
+        <div class="muted" style="font-size:11.5px;margin-bottom:10px;">Apr 16 – May 13</div>
+        <div id="planList" style="display:flex;flex-direction:column;gap:14px;"></div>
+      </div>
+    </div>
+  `;
+  $('#content').appendChild(s);
+
+  const goalTiles = $('#goalTiles', s);
+  const featured = ['followers','impressions','email-sessions','sample-requests'];
+  DATA.goals.filter(g=>featured.includes(g.id)).forEach(g=>{
+    const pct = Math.min(100, Math.round((g.current-g.baseline)/((g.target-g.baseline)||1)*100));
+    const t = el('div','card stat-tile');
+    t.innerHTML = `
+      <div class="label">${esc(g.name)}</div>
+      <div class="value">${fmt(g.current)}<span class="muted" style="font-size:13px;font-weight:400;"> / ${fmt(g.target)}</span></div>
+      <div class="ws-track"><span style="width:${Math.max(pct,3)}%"></span></div>
+      <div class="delta">${esc(g.period)}</div>
+    `;
+    goalTiles.appendChild(t);
+  });
+
+  const pList = $('#priorityList', s);
+  DATA.dailyPriorities.slice().sort((a,b)=>a.priority-b.priority).forEach(p=>{
+    const row = el('div','priority-row');
+    row.innerHTML = `
+      <div class="num">${String(p.priority).padStart(2,'0')}</div>
+      <div class="body">
+        <div class="title-line">
+          <span class="title">${esc(p.title)}</span>
+          <span class="pill ${p.urgency==='urgent'?'warn':'neutral'}">${esc(p.urgency)}</span>
+          ${p.blocked?'<span class="pill crit">blocked</span>':''}
+        </div>
+        <div class="why">${esc(p.why)}</div>
+      </div>
+    `;
+    pList.appendChild(row);
+  });
+
+  const planList = $('#planList', s);
+  DATA.thirtyDayPlan.forEach(w=>{
+    const box = el('div');
+    box.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+        <span style="font-weight:700;font-size:12.5px;">${esc(w.label)}</span>
+        <span class="mono muted" style="font-size:10.5px;">${esc(w.days)}</span>
+      </div>
+      <ul style="display:flex;flex-direction:column;gap:5px;">
+        ${w.tasks.map(t=>`<li style="font-size:12px;color:var(--ink-2);padding-left:12px;position:relative;"><span style="position:absolute;left:0;top:6px;width:5px;height:1px;background:var(--ink-3);"></span>${esc(t)}</li>`).join('')}
+      </ul>
+    `;
+    planList.appendChild(box);
+  });
+}
+
+function buildPositioning(){
+  const s = sectionWrap('positioning');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">02 — Positioning &amp; Voice</div><h2>The locked messaging framework</h2></div>
+    </div>
+
+    <div class="card hero-card">
+      <div class="core">${esc(DATA.positioning.coreIdea)}</div>
+      <div class="sub mono" style="letter-spacing:.02em;color:var(--accent);margin-top:14px;font-size:13px;">${esc(DATA.positioning.currentTagline)}</div>
+      <div class="chip-row" style="margin-top:14px;" id="taglineAlts"></div>
+    </div>
+
+    <div>
+      <h3 class="h" style="margin-bottom:10px;">Messaging pillars</h3>
+      <div class="grid cols-4" id="pillarGrid"></div>
+    </div>
+
+    <div class="card">
+      <h3 class="h" style="margin-bottom:6px;">Voice guidelines</h3>
+      <div id="voiceRules"></div>
+    </div>
+
+    <div class="callout" id="missingCallout"></div>
+  `;
+  $('#content').appendChild(s);
+
+  const alts = $('#taglineAlts', s);
+  DATA.positioning.taglineOptions.filter(t=>t!==DATA.positioning.currentTagline).forEach(t=>{
+    alts.appendChild(el('span','chip mono', esc(t)));
+  });
+
+  const pg = $('#pillarGrid', s);
+  DATA.positioning.pillars.forEach(p=>{
+    const c = el('div','card');
+    c.innerHTML = `
+      <div class="mono muted" style="font-size:10.5px;letter-spacing:.06em;">PILLAR ${p.id}</div>
+      <h4 class="h" style="margin:6px 0 8px;color:var(--accent);">${esc(p.name)}</h4>
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">${esc(p.headline)}</div>
+      <div class="body-text">${esc(p.body)}</div>
+    `;
+    pg.appendChild(c);
+  });
+
+  const vr = $('#voiceRules', s);
+  DATA.positioning.voiceGuidelines.forEach(v=>{
+    const r = el('div','rule-row');
+    r.innerHTML = `<div class="rule">${esc(v.rule)}</div><div class="example">${esc(v.example)}</div>`;
+    vr.appendChild(r);
+  });
+
+  const mc = $('#missingCallout', s);
+  mc.innerHTML = `<div><strong>Open gaps</strong><ul>${DATA.positioning.missingData.map(m=>`<li>${esc(m)}</li>`).join('')}</ul></div>`;
+}
+
+function buildWorkstreams(){
+  const s = sectionWrap('workstreams');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">03 — Workstreams</div><h2>${DATA.workstreams.length} active tracks</h2></div>
+      <div class="meta">Owner: Marketing unless noted</div>
+    </div>
+    <div class="grid cols-3" id="wsGrid"></div>
+  `;
+  $('#content').appendChild(s);
+  const grid = $('#wsGrid', s);
+  const statusPill = { active:'good', planning:'steel', 'not-started':'neutral' };
+  DATA.workstreams.forEach(w=>{
+    const c = el('div','card ws-card');
+    c.innerHTML = `
+      <div class="ws-top">
+        <div>
+          <div class="name">${esc(w.name)}</div>
+          <div class="ws-owner">${esc(w.owner)} · ${esc(w.phase)}</div>
+        </div>
+        <span class="pill ${statusPill[w.status]}">${esc(w.status.replace('-',' '))}</span>
+      </div>
+      <div class="ws-kpi">${esc(w.kpi)}</div>
+      <div class="ws-track"><span style="width:${w.progress}%"></span></div>
+      <div class="ws-foot"><span>${w.progress}% complete</span><span>${w.keyActions.length} actions</span></div>
+      ${w.blockers.length? `<div class="ws-blockers">${w.blockers.map(b=>`<span class="pill crit">${esc(b)}</span>`).join('')}</div>`:''}
+    `;
+    grid.appendChild(c);
+  });
+}
+
+function buildPerformance(){
+  const s = sectionWrap('performance');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">04 — Performance</div><h2>Social, email &amp; channel benchmarks</h2></div>
+      <div class="meta">Social: ${esc(DATA.social.period)} · Email: ${esc(DATA.email.period)}</div>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="card stat-tile"><div class="label">LinkedIn followers</div><div class="value">${fmt(DATA.social.followers)}</div><div class="delta up">+${fmt(DATA.social.newFollowers)} since ${fmt(DATA.social.followersStart)}</div></div>
+      <div class="card stat-tile"><div class="label">Avg impressions / post</div><div class="value">${fmt(DATA.social.avgImpressions)}</div><div class="delta">Target 1,500+</div></div>
+      <div class="card stat-tile"><div class="label">Email engagement rate</div><div class="value">${DATA.email.engagementRate}%</div><div class="delta">${fmt(DATA.email.sessions)} sessions</div></div>
+      <div class="card stat-tile"><div class="label">Instagram reach / post</div><div class="value">${fmt(DATA.social.instagram.reach)}</div><div class="delta">${DATA.social.instagram.engagementRate}% engagement</div></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h3 class="h">Social insights</h3>
+        <div class="muted" style="font-size:11.5px;margin-bottom:8px;">${esc(DATA.social.platform)}</div>
+        <ul id="socialInsights" style="display:flex;flex-direction:column;gap:7px;"></ul>
+        <div style="margin-top:12px;">
+          <div class="mono muted" style="font-size:10.5px;margin-bottom:6px;">TOP CITIES</div>
+          <div class="chip-row" id="topCities"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="h">Email insights</h3>
+        <div class="muted" style="font-size:11.5px;margin-bottom:8px;">ActiveCampaign · avg time ${esc(DATA.email.avgEngagementTime)}</div>
+        <ul id="emailInsights" style="display:flex;flex-direction:column;gap:7px;"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="h" style="margin-bottom:12px;">Goals — baseline → target</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;" id="goalBars"></div>
+    </div>
+
+    <div>
+      <h3 class="h" style="margin-bottom:10px;">Channels</h3>
+      <div class="table-wrap card" style="padding:0;">
+        <table id="channelTable"></table>
+      </div>
+    </div>
+  `;
+  $('#content').appendChild(s);
+
+  const bullet = t => `<li style="font-size:12.5px;color:var(--ink-2);padding-left:13px;position:relative;"><span style="position:absolute;left:0;top:6px;width:6px;height:1px;background:var(--accent);"></span>${esc(t)}</li>`;
+  $('#socialInsights', s).innerHTML = DATA.social.insights.map(bullet).join('');
+  $('#emailInsights', s).innerHTML = DATA.email.insights.map(bullet).join('');
+  $('#topCities', s).innerHTML = DATA.social.topCities.map(c=>`<span class="chip">${esc(c)}</span>`).join('');
+
+  const goalBars = $('#goalBars', s);
+  DATA.goals.forEach(g=>{
+    const pct = Math.max(3, Math.min(100, (g.current-g.baseline)/((g.target-g.baseline)||1)*100));
+    const row = el('div');
+    row.innerHTML = `
+      <div class="bar-row">
+        <div class="name">${esc(g.name)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div><div class="bar-target" style="left:100%"></div></div>
+        <div class="bar-nums"><b>${fmt(g.current)}</b> / ${fmt(g.target)}</div>
+      </div>
+      <div class="muted" style="font-size:11px;margin:4px 0 0 162px;">${esc(g.notes)} — ${esc(g.period)}</div>
+    `;
+    goalBars.appendChild(row);
+  });
+
+  const typePill = { Organic:'good', Paid:'accent', Owned:'steel' };
+  const chTable = $('#channelTable', s);
+  chTable.innerHTML = `
+    <thead><tr><th>Channel</th><th>Type</th><th>Baseline</th><th>Target</th><th>Content role</th></tr></thead>
+    <tbody>
+    ${DATA.channels.map(c=>`
+      <tr>
+        <td class="strong">${esc(c.name)}</td>
+        <td><span class="pill ${typePill[c.type]||'neutral'}">${esc(c.type)}</span></td>
+        <td class="mono">${Object.values(c.baseline).map(esc).join(' · ')}</td>
+        <td class="mono">${Object.values(c.target).map(esc).join(' · ')}</td>
+        <td>${esc(c.contentRole)}</td>
+      </tr>
+    `).join('')}
+    </tbody>
+  `;
+}
+
+function buildCampaign(){
+  const s = sectionWrap('campaign');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">05 — Campaign &amp; Paid</div><h2>Phase timeline &amp; media plan</h2></div>
+    </div>
+
+    <div class="card" style="padding:0 0 4px;">
+      <div class="timeline" id="phaseTimeline"></div>
+    </div>
+
+    <div>
+      <h3 class="h" style="margin-bottom:10px;">Content themes</h3>
+      <div class="grid cols-3" id="themeGrid"></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h3 class="h">Paid budget allocation</h3>
+        <div class="muted" style="font-size:11.5px;margin-bottom:12px;">€${DATA.paidAds.totalBudget}/month total</div>
+        <div class="stack-bar" id="paidStack"></div>
+        <div class="stack-legend" id="paidLegend"></div>
+        <div class="body-text" style="margin-top:14px;">${esc(DATA.paidAds.targeting)}</div>
+      </div>
+      <div class="card">
+        <h3 class="h">Campaign-flow budget split</h3>
+        <div id="flowBudget" style="display:flex;flex-direction:column;gap:10px;margin-top:6px;"></div>
+        <div class="mono muted" style="font-size:10.5px;margin:16px 0 6px;">A/B TEST IDEAS</div>
+        <ul id="testIdeas" style="display:flex;flex-direction:column;gap:6px;"></ul>
+      </div>
+    </div>
+
+    <div class="callout" id="campaignMissing"></div>
+  `;
+  $('#content').appendChild(s);
+
+  const tl = $('#phaseTimeline', s);
+  DATA.campaign.phases.forEach(p=>{
+    const d = el('div', 'phase'+(p.status==='current'?' current':''));
+    d.innerHTML = `
+      <div class="dates">${esc(p.dates)}</div>
+      <div class="pname">${esc(p.name)} ${p.status==='current'?'<span class=\"pill accent\" style=\"margin-left:6px;\">current</span>':''}</div>
+      <div class="pill steel" style="margin-bottom:10px;">${esc(p.flow)}</div>
+      <ul>${p.actions.map(a=>`<li>${esc(a)}</li>`).join('')}</ul>
+    `;
+    tl.appendChild(d);
+  });
+
+  const themeGrid = $('#themeGrid', s);
+  DATA.campaign.contentThemes.forEach(t=>{
+    const c = el('div','card');
+    c.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <h4 class="h">${esc(t.theme)}</h4>
+        <span class="pill accent">${esc(t.flow)}</span>
+      </div>
+      <div class="body-text" style="margin:8px 0 10px;">${esc(t.desc)}</div>
+      <div class="chip-row">${t.channels.map(c2=>`<span class="chip">${esc(c2)}</span>`).join('')}</div>
+    `;
+    themeGrid.appendChild(c);
+  });
+
+  const colors = ['var(--accent)','var(--steel)','#6B8F71'];
+  const stack = $('#paidStack', s);
+  stack.innerHTML = DATA.paidAds.allocation.map((a,i)=>`<div class="stack-seg" style="width:${a.pct}%;background:${colors[i]};">${a.pct}%</div>`).join('');
+  const legend = $('#paidLegend', s);
+  legend.innerHTML = DATA.paidAds.allocation.map((a,i)=>`<span class="item"><span class="sw" style="background:${colors[i]}"></span>${esc(a.name)}</span>`).join('');
+
+  const flow = $('#flowBudget', s);
+  Object.entries(DATA.paidAds.campaignFlow).forEach(([k,v])=>{
+    const row = el('div');
+    row.innerHTML = `<div style="display:flex;gap:8px;align-items:baseline;"><span class="pill steel" style="min-width:70px;justify-content:center;">${esc(k)}</span><span class="body-text" style="font-size:12px;">${esc(v)}</span></div>`;
+    flow.appendChild(row);
+  });
+  $('#testIdeas', s).innerHTML = DATA.paidAds.testIdeas.map(t=>`<li style="font-size:12px;color:var(--ink-2);padding-left:12px;position:relative;"><span style="position:absolute;left:0;top:6px;width:5px;height:1px;background:var(--ink-3);"></span>${esc(t)}</li>`).join('');
+
+  $('#campaignMissing', s).innerHTML = `<div><strong>Missing before launch</strong><ul>${DATA.campaign.missing.map(m=>`<li>${esc(m)}</li>`).join('')}</ul></div>`;
+}
+
+function buildPR(){
+  const s = sectionWrap('pr');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">06 — PR &amp; Influencer</div><h2>Target publications &amp; creator seeding</h2></div>
+    </div>
+
+    <div class="table-wrap card" style="padding:0;">
+      <table id="prTable"></table>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h3 class="h">Influencer target profile</h3>
+        <div class="body-text" style="margin:8px 0 14px;">${esc(DATA.influencer.targetProfile)}</div>
+        <div class="mono muted" style="font-size:10.5px;margin-bottom:6px;">SEEDING CONCEPT</div>
+        <div class="quote-block">${esc(DATA.influencer.seedingConcept)}</div>
+      </div>
+      <div class="card">
+        <h3 class="h">Outreach steps</h3>
+        <ul id="outreachSteps" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;"></ul>
+      </div>
+    </div>
+  `;
+  $('#content').appendChild(s);
+
+  const pPill = { High:'accent', Medium:'steel', Low:'neutral' };
+  const prTable = $('#prTable', s);
+  prTable.innerHTML = `
+    <thead><tr><th>Publication</th><th>Region</th><th>Type</th><th>Hook angle</th><th>Difficulty</th><th>Priority</th></tr></thead>
+    <tbody>
+    ${DATA.pr.map(p=>`
+      <tr>
+        <td class="strong">${esc(p.name)}</td>
+        <td>${esc(p.region)}</td>
+        <td>${esc(p.type)}</td>
+        <td>${esc(p.hookAngle)}</td>
+        <td>${esc(p.difficulty)}</td>
+        <td><span class="pill ${pPill[p.priority]}">${esc(p.priority)}</span></td>
+      </tr>
+    `).join('')}
+    </tbody>
+  `;
+
+  const steps = $('#outreachSteps', s);
+  DATA.influencer.outreachSteps.forEach((step,i)=>{
+    const row = el('div');
+    row.style.cssText = 'display:flex;gap:10px;align-items:flex-start;';
+    row.innerHTML = `<span class="mono" style="color:var(--accent);font-size:11px;padding-top:1px;">${String(i+1).padStart(2,'0')}</span><span class="body-text">${esc(step)}</span>`;
+    steps.appendChild(row);
+  });
+}
+
+function buildScout(){
+  const s = sectionWrap('scout');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">07 — Lead Scout</div><h2>Planning applications &amp; outreach queue</h2></div>
+    </div>
+
+    <div class="grid cols-2" id="scoutApps"></div>
+
+    <div>
+      <h3 class="h" style="margin-bottom:10px;">Outreach tasks</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;" id="scoutTasks"></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h4 class="h" style="color:var(--good);margin-bottom:8px;">Prioritize</h4>
+        <div class="chip-row">${DATA.leadScout.rules.prioritize.map(r=>`<span class="chip">${esc(r)}</span>`).join('')}</div>
+      </div>
+      <div class="card">
+        <h4 class="h" style="color:var(--ink-3);margin-bottom:8px;">Deprioritize</h4>
+        <div class="chip-row">${DATA.leadScout.rules.deprioritize.map(r=>`<span class="chip">${esc(r)}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+  $('#content').appendChild(s);
+
+  const apps = $('#scoutApps', s);
+  DATA.leadScout.applications.forEach(a=>{
+    const c = el('div','card');
+    c.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;font-size:13.5px;">${esc(a.projectName)}</div>
+          <div class="muted" style="font-size:12px;">${esc(a.address)}, ${esc(a.region)}</div>
+        </div>
+        <span class="pill good">${esc(a.status)}</span>
+      </div>
+      <div class="body-text" style="margin:10px 0;">${esc(a.description)}</div>
+      <div class="chip-row" style="margin-bottom:10px;"><span class="chip">${esc(a.buildingType)}</span><span class="chip mono">${esc(a.reference)}</span><span class="chip mono">${esc(a.date)}</span></div>
+      <div class="mono muted" style="font-size:11px;">${esc(a.firm)} · ${esc(a.developer)}</div>
+      <div class="muted" style="font-size:11.5px;margin-top:6px;">${esc(a.notes)}</div>
+    `;
+    apps.appendChild(c);
+  });
+
+  const tasks = $('#scoutTasks', s);
+  DATA.leadScout.outreachTasks.forEach(t=>{
+    const c = el('div','card');
+    c.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700;font-size:13.5px;">${esc(t.projectName)}</div>
+          <div class="muted" style="font-size:12px;">${esc(t.firm)} · ${esc(t.region)}</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <span class="pill accent">${esc(t.priority)}</span>
+          <span class="pill neutral">due ${esc(t.dueDate)}</span>
+        </div>
+      </div>
+      <div class="grid cols-2" style="margin-top:12px;">
+        <div>
+          <div class="mono muted" style="font-size:10.5px;margin-bottom:4px;">RELEVANCE</div>
+          <div class="body-text">${esc(t.relevance)}</div>
+        </div>
+        <div>
+          <div class="mono muted" style="font-size:10.5px;margin-bottom:4px;">PRODUCT ANGLE</div>
+          <div class="body-text">${esc(t.productAngle)}</div>
+        </div>
+      </div>
+      <div class="mono muted" style="font-size:10.5px;margin:12px 0 4px;">DRAFT OUTREACH</div>
+      <div class="quote-block">${esc(t.outreachMessage)}</div>
+    `;
+    tasks.appendChild(c);
+  });
+}
+
+function buildVault(){
+  const s = sectionWrap('vault');
+  s.innerHTML = `
+    <div class="section-head">
+      <div><div class="eyebrow">08 — Brainstorm Vault</div><h2>Raw working notes, unedited</h2></div>
+      <div class="meta">${Object.keys(DATA.brainstormOutputs).length} documents</div>
+    </div>
+    <div id="vaultList"></div>
+  `;
+  $('#content').appendChild(s);
+
+  const titleize = k => k.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+  const list = $('#vaultList', s);
+  Object.entries(DATA.brainstormOutputs).forEach(([k,v],i)=>{
+    const item = el('div','accordion-item'+(i===0?' open':''));
+    item.innerHTML = `
+      <button class="accordion-head">
+        <span>${esc(titleize(k))}</span>
+        <span class="chevron">›</span>
+      </button>
+      <div class="accordion-body"><pre>${esc(v)}</pre></div>
+    `;
+    item.querySelector('.accordion-head').addEventListener('click', ()=> item.classList.toggle('open'));
+    list.appendChild(item);
+  });
+}
+
+/* ---------------------------------------------------------- */
+/* boot                                                         */
+/* ---------------------------------------------------------- */
+buildRuler();
+buildNav();
+buildTopbar();
+buildHealth();
+buildOverview();
+buildPositioning();
+buildWorkstreams();
+buildPerformance();
+buildCampaign();
+buildPR();
+buildScout();
+buildVault();
+showSection('overview');
+</script>
