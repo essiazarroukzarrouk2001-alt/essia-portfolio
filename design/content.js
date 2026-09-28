@@ -8,13 +8,13 @@ window.ESSIA = {
 
   // ── GLOBAL ──────────────────────────────────────────────
   name:     "Essia Zarrouk",
-  role:     "Marketing & Branding Specialist",
+  role:     "Product, Marketing & Brand Manager",
   tagline:  "Between the big idea and the bottom line — that's where I work.",
   tagline2: "A film lover's eye for story, a puzzler's instinct for making the pieces fit.",
   signoff:  "Not new here, but always improving.",
 
   // ── PROFILE ─────────────────────────────────────────────
-  bio: "I own the whole arc — strategy, creative, and delivery. Across three years in agencies and brands, I've led product launches from concept to market, creative-directed shoots and films, managed global clients like Mitsubishi, and owned the budgets, timelines, and teams that keep it all moving. Agency-trained, I now run brand and marketing end to end for a design and architecture studio in Amsterdam. My edge is range: I can set the direction and ship the work, read the analytics and brief the creative. Trilingual (Arabic, French, English), and at my best with a lot in motion and a problem to solve.",
+  bio: "I own the whole arc — product, brand, and delivery. Across three years in agencies and brands, I've been assigned by a CEO to run a product line end to end — roadmap, cross-functional build, and go-to-market — alongside leading brand strategy, creative direction, and global client relationships like Mitsubishi. Agency-trained, I now run product, brand, and marketing end to end for a design and architecture studio in Amsterdam. My edge is range: I can own the roadmap and ship the campaign, read the analytics and brief the creative. Trilingual (Arabic, French, English), and at my best with a lot in motion and a problem to solve.",
 
   // ── CONTACT ─────────────────────────────────────────────
   email:     "essiazarrouk.zarrouk2001@gmail.com",
@@ -26,14 +26,14 @@ window.ESSIA = {
   // ── SKILLS ──────────────────────────────────────────────
   skills: [
     { num:"01", name:"Brand Strategy", intro:"Projects that shaped how I think about brand strategy — category creation, mental availability, and building brands that stick." },
-    { num:"02", name:"Social Media", intro:"▢ your intro for this skill" },
+    { num:"02", name:"Social Media", intro:"Social-first campaigns and launches — funnel strategy, channel content, and the work that turns a launch or a colour drop into measurable demand." },
     { num:"03", name:"Content & Copy", intro:"Content strategy and copywriting — building content engines, editorial calendars, and copy that converts." },
     { num:"04", name:"Art Direction", intro:"Art direction — campaign concepting, visual systems, and directing shoots and productions from brief to delivery." },
     { num:"05", name:"Account Management", intro:"Managing global B2B client portfolios, agency relationships, and integrated campaign delivery end to end." },
     { num:"06", name:"Analytics & Performance", intro:"Building the measurement infrastructure behind campaigns — first-party data, privacy-compliant tracking, and behavioural instrumentation that makes every downstream decision more accurate." },
     { num:"07", name:"Brand & Communications", intro:"Brand and communications work — from company rebrands to messaging houses and brand voice systems." },
     { num:"08", name:"Media Production", intro:"Video and media production — scripting, directing, and producing content across formats and audiences." },
-    { num:"09", name:"Product Management", intro:"Product management — owning launches end to end, from brief and positioning through to production and go-to-market." },
+    { num:"09", name:"Product Management", intro:"Product management — owning the roadmap end to end, from brief and prioritisation through cross-functional build to production and go-to-market." },
     { num:"10", name:"Research & Insight", intro:"Analytics, MarTech, and research — turning data into strategy and building the measurement infrastructure behind campaigns." },
     { num:"11", name:"Team Management", intro:"Leading and managing creative, development, and agency teams — from briefing and feedback to culture and performance." },
     { num:"12", name:"Email Marketing", intro:"End-to-end email marketing — from programme setup and automation to segmentation, testing, and reporting." },
@@ -119,16 +119,16 @@ Result. A launch that landed as one coherent brand world across film, social, em
         title:  "Algolia Behavioural-Data Instrumentation — NOWN",
         client: "NOWN",
         year:   "2025–2026",
-        tags:   ["Analytics & Performance"],
+        tags:   ["Analytics & Performance","Product Management"],
         tools:  ["Algolia","GA4"],
         role:   "Analytics & Performance",
-        desc:   `Challenge. NOWN's Algolia-powered site search wasn't receiving any behavioural data — no clicks, conversions, or engagement events. Without that data, Algolia's relevance features like Dynamic Re-Ranking had nothing to learn from, so search results couldn't improve over time.
+        desc:   `Challenge. NOWN's Algolia-powered site search — a core product feature — wasn't receiving any behavioural data — no clicks, conversions, or engagement events. Without that data, Algolia's relevance features like Dynamic Re-Ranking had nothing to learn from, so a feature customers relied on couldn't improve over time.
 
-Approach. Instrumented Algolia's Events API to capture real user behaviour — click-through, conversion, and engagement signals — feeding them back into the search engine so its relevance model could learn and improve from actual usage patterns.
+Approach. Scoped and instrumented Algolia's Events API to capture real user behaviour — click-through, conversion, and engagement signals — feeding them back into the search engine so its relevance model could learn and improve from actual usage patterns. Treated it as a product fix, not a marketing task: diagnosed the missing feedback loop, prioritised closing it, and shipped the instrumentation myself.
 
-Framework. Behavioural data instrumentation → closed-loop relevance optimisation. Search quality compounds: the more signal you give the algorithm, the better it ranks, the more it converts, the more signal you get. Getting the instrumentation right is the foundation the whole loop depends on.
+Framework. Behavioural data instrumentation → closed-loop relevance optimisation, i.e. product-led growth applied to a single feature. Search quality compounds: the more signal you give the algorithm, the better it ranks, the more it converts, the more signal you get. Getting the instrumentation right is the foundation the whole loop depends on — the same prioritisation instinct that decides what a roadmap tackles first.
 
-Result. Algolia's search now receives live behavioural data, enabling Dynamic Re-Ranking to optimise results based on real user behaviour — turning a static search index into a self-improving relevance engine.`
+Result. Algolia's search now receives live behavioural data, enabling Dynamic Re-Ranking to optimise results based on real user behaviour — turning a static search index into a self-improving relevance engine, and a product feature that was quietly broken into one that compounds.`
       }
     ],
 
@@ -506,9 +506,9 @@ Result. Client work delivered to standard and on time across a portfolio of acco
         tags:   ["Content & Copy","Social Media"],
         tools:  ["LinkedIn","Adobe Suite","Buffer"],
         role:   "Content & Copy",
-        desc:   `Challenge. 
+        desc:   `Challenge. NOWN had no ongoing LinkedIn presence to speak of — no cadence, no defined voice, nothing building the brand's presence in specifiers' minds between active sales conversations. Posting happened when there was news, not on a rhythm an audience could learn to expect.
 
-Approach. 
+Approach. Built a recurring content engine rather than one-off posts: a content calendar mixing brand story, industry insight, and product/launch news in a roughly 70/20/10 split — value and story doing most of the work, promotion a smaller share. Wrote and designed each post in Adobe Suite, scheduled through Buffer, and tracked what resonated to sharpen the next batch.
 
 Framework. Mental availability + the value-led content mix (roughly 70/20/10). Consistent presence builds mental availability — being the brand that comes to mind when a specifier has a need. The mix keeps it from being a sales feed: most posts give value or tell a story, a smaller share promote, so the audience keeps showing up rather than tuning out.
 
@@ -521,9 +521,9 @@ Result. A consistent, credible brand voice on LinkedIn with steady audience grow
         tags:   ["Content & Copy","Social Media"],
         tools:  ["Adobe Suite"],
         role:   "Content & Copy",
-        desc:   `Challenge. 
+        desc:   `Challenge. ChatLicense needed to teach genuinely serious digital-safety topics — privacy, online risk, digital footprint — to a young, digital-native audience who tune out anything that sounds like a lecture or a warning label.
 
-Approach. 
+Approach. Wrote and designed a series of explainer content pieces that led with story and relatability instead of warnings: scripted short-form videos, animations, and visuals in Adobe Suite, each one framed from inside the audience's own digital world — their platforms, their references — so the safety message read as something worth watching, not something to skip.
 
 Framework. Edutainment + audience-first messaging. Educational content only lands when it's engaging enough to consume by choice, so the copy leads with story and relatability rather than warnings. Every topic is framed from inside the audience's own digital world, which is what makes the message land instead of bounce off.
 
@@ -536,9 +536,9 @@ Result. A body of content that made complex digital-literacy topics genuinely ac
         tags:   ["Content & Copy","Social Media"],
         tools:  ["Adobe Suite","Instagram","LinkedIn","Buffer"],
         role:   "Content & Copy",
-        desc:   `Challenge. 
+        desc:   `Challenge. WFTO needed campaign content that could carry a global fair-trade advocacy message past statistics and policy language, into something that actually built engagement with its community and stakeholders.
 
-Approach. 
+Approach. Developed and produced content across Instagram and LinkedIn built around human stories and shared values rather than numbers alone — designed in Adobe Suite and scheduled through Buffer — leading each post with a clear “why” so the audience felt part of the movement instead of being lectured at by it.
 
 Framework. Cause-led storytelling + values-based messaging. Advocacy content persuades through narrative and shared values, not statistics alone — leading with human stories and a clear “why” so the audience feels part of the movement rather than lectured by it.
 
@@ -650,13 +650,13 @@ Result. A finished brand-story short film — directed and delivered by leading 
         tags:   ["Product Management","Team Management"],
         tools:  ["ClickUp","Figma"],
         role:   "Product Management",
-        desc:   `Challenge. Veil is a decorative ceiling and wall system that ships with a configuration tool — a digital configurator that lets customers customise the product themselves. Bringing it to market meant owning a genuinely complex product: a physical, manufactured system and a digital software tool, developed and launched together. The CEO assigned me as Product Manager, accountable for taking Veil from concept to market across every function.
+        desc:   `Challenge. Veil is a decorative ceiling and wall system that ships with a configuration tool — a digital configurator that lets customers customise the product themselves. Bringing it to market meant owning a genuinely complex product: a physical, manufactured system and a digital software tool, developed and launched together. The CEO assigned me as Product Manager, accountable for the product roadmap and for taking Veil from concept to market across every function.
 
-Approach. I owned the full product lifecycle, structured across four pillars: Product & production. I drove the product from design through to production — overseeing development of the physical system and production of the first units to validate the whole thing in the real world. Digital product & development. I managed the web developer day to day to build the configuration tool, and contributed to the UI — owning the digital product alongside the physical one, and keeping engineering aligned to what the product needed to do. Go-to-market. I led the promotional content and launch communications, so the product didn't just get built — it landed, with a coherent story around it. Cross-functional coordination. As the assigned PM, I sat at the centre — connecting design, development, production, and marketing — making the calls and holding the timeline so every function moved as one.
+Approach. I owned the full product lifecycle, working an informal roadmap structured across four pillars: Product & production. I drove the product from design through to production — overseeing development of the physical system and production of the first units to validate the whole thing in the real world. Digital product & development. I managed the web developer day to day to build the configuration tool, and contributed to the UI — writing requirements in plain briefs (my equivalent of a PRD), prioritising what shipped for launch versus what could follow, and keeping engineering aligned to what the product needed to do. Go-to-market. I led the promotional content and launch communications, so the product didn't just get built — it landed, with a coherent go-to-market story around it. Cross-functional coordination. As the assigned PM, I sat at the centre — connecting design, development, production, and marketing — making the prioritisation calls and holding the timeline so every function moved against one roadmap.
 
-Framework. Full-lifecycle product management at the intersection of business, technology, and UX. A product manager owns the outcome, not a single function — coordinating design, engineering, production, and go-to-market around one roadmap. Veil is a textbook case of managing a phygital product: a physical system and a digital configurator developed in parallel, where the PM's job is to keep the hardware, the software, and the market story converging on the same launch.
+Framework. Full-lifecycle product management at the intersection of business, technology, and UX. A product manager owns the outcome, not a single function — coordinating design, engineering, production, and go-to-market around one roadmap, prioritising scope the way RICE or MoSCoW would formalise it even where the process itself was lightweight. Veil is a textbook case of managing a phygital product: a physical system and a digital configurator developed in parallel, where the PM's job is to keep the hardware, the software, and the market story converging on the same launch.
 
-Result. Veil brought to market end to end — physical system produced, configuration tool built and shipped, and launch delivered — with one person, assigned by the CEO, owning the product from concept to customer.`
+Result. Veil brought to market end to end — physical system produced, configuration tool built and shipped, and launch delivered — with one person, assigned by the CEO, owning the roadmap and the product from concept to customer.`
       },
       {
         title:  "Product Development & Content Management — ChatLicense",
@@ -667,9 +667,9 @@ Result. Veil brought to market end to end — physical system produced, configur
         role:   "Product Management",
         desc:   `Challenge. ChatLicense was a soon-to-launch digital-literacy app that needed both product development and a steady pipeline of in-app content to be ready for market — building the product and filling it with what users would actually engage with.
 
-Approach. I contributed across the product's development lifecycle: Build the product. I worked as part of the development team, contributing to the app itself as it moved toward launch. Develop the content layer. I created the animations, games, shows, and blogs that populated the product — the content that made the app worth opening. Validate with users. I ran market research and tested the app with multiple schools in the Netherlands, gathering user feedback to refine and improve the product before launch. Manage delivery. I handled content management, logistics, and promotional efforts, keeping the product's moving parts coordinated.
+Approach. I contributed across the product's development lifecycle, running it as an iterative discovery loop rather than a single build-and-ship: Build the product. I worked as part of the development team, contributing to the app itself as it moved toward launch. Develop the content layer. I created the animations, games, shows, and blogs that populated the product — the content that made the app worth opening. Validate with users. I ran market research and user-tested the app with multiple schools across the Netherlands — a discovery phase that surfaced what to fix before spending more build time on it. Refine and manage delivery. I fed that feedback back into the product and content, then handled content management, logistics, and promotional efforts to keep every moving part coordinated toward launch.
 
-Framework. Iterative, user-centred product development. Good products are built in a loop — develop, test with real users, gather feedback, refine — rather than shipped blind. Testing with schools and feeding that feedback back into the product is user-centred development in practice. Owning both the build and the content layer meant managing the product as a whole experience, not just its features.
+Framework. Iterative, user-centred product development — a Build–Measure–Learn loop applied pre-launch. Good products are built in a loop — develop, test with real users, gather feedback, refine — rather than shipped blind. Testing with schools and feeding that feedback back into the product is user-centred discovery in practice: validating the product with real users before committing further build time to it. Owning both the build and the content layer meant managing the product as a whole experience, not just its features.
 
 Result. Contributed to taking ChatLicense from pre-launch toward market — a developed, user-tested product with a full content layer, shaped by real feedback from its target audience.`
       }
