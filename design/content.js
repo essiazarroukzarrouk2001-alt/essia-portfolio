@@ -14,7 +14,7 @@ window.ESSIA = {
   signoff:  "Not new here, but always improving.",
 
   // ── PROFILE ─────────────────────────────────────────────
-  bio: "I own the whole arc — product, brand, and delivery. Across three years in agencies and brands, I've been assigned by a CEO to run a product line end to end — roadmap, cross-functional build, and go-to-market — alongside leading brand strategy, creative direction, and global client relationships like Mitsubishi. Agency-trained, I now run product, brand, and marketing end to end for a design and architecture studio in Amsterdam. My edge is range: I can own the roadmap and ship the campaign, read the analytics and brief the creative. Trilingual (Arabic, French, English), and at my best with a lot in motion and a problem to solve.",
+  bio: "I own the whole arc — product, brand, and delivery. Across four years in agencies and brands, I've been assigned by a CEO to run a product line end to end — roadmap, cross-functional build, and go-to-market — alongside leading brand strategy, creative direction, and global client relationships like Mitsubishi. Agency-trained, I now run product, brand, and marketing end to end for a design and architecture studio in Amsterdam. My edge is range: I can own the roadmap and ship the campaign, read the analytics and brief the creative. Trilingual (Arabic, French, English), and at my best with a lot in motion and a problem to solve.",
 
   // ── CONTACT ─────────────────────────────────────────────
   email:     "essiazarrouk.zarrouk2001@gmail.com",
