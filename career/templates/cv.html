@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Essia Zarrouk — CV</title>
+<!--
+  CV TEMPLATE — one layout for all three tracks.
+  Green-outlined blocks marked data-slot are rewritten per job by the agent.
+  Add class "final" to <body> to hide the slot annotations when rendering the real PDF.
+  ATS-safe: single column, real text, standard headings, no layout tables, no text in images.
+-->
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --ink:#111; --mute:#444; --grey:#777; --rule:#d9d9d9; --strike:#C6FF00; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); background:#fff;
+         font-size: 8.7pt; line-height: 1.36; }
+  .page { width: 210mm; min-height: 297mm; padding: 10mm 14mm 8mm; }
+  header { display: grid; grid-template-columns: 1fr auto; gap: 8mm; align-items: end;
+           padding-bottom: 3.5mm; border-bottom: 2px solid var(--ink); position: relative; }
+  header::after { content:""; position:absolute; left:0; bottom:-2px; width:28mm; height:2px; background:var(--strike); }
+  h1 { font-size: 23pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .headline { margin-top: 2.5mm; font-size: 11pt; font-weight: 500; }
+  .contact { text-align: right; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 7.6pt;
+             color: var(--mute); line-height: 1.6; }
+  .contact a { color: inherit; text-decoration: none; }
+  section { margin-top: 3.6mm; }
+  h2 { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 7.6pt; font-weight: 600;
+       letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-bottom: 2mm; }
+  .summary p { font-size: 9pt; color: var(--ink); max-width: 170mm; }
+  .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .proof div { border-top: 1px solid var(--rule); padding-top: 2mm; }
+  .proof b { display:block; font-size: 9.6pt; margin-bottom: 1mm; }
+  .proof span { color: var(--mute); font-size: 8pt; line-height: 1.4; display:block; }
+  .role { margin-bottom: 2.4mm; }
+  .role-head { display: flex; justify-content: space-between; gap: 4mm; align-items: baseline; }
+  .role-head b { font-size: 10pt; }
+  .role-head .meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 7.6pt; color: var(--grey); white-space: nowrap; }
+  .sub { color: var(--mute); font-size: 8.8pt; margin: .3mm 0 1mm; }
+  ul { padding-left: 4mm; }
+  li { margin-bottom: .4mm; color: #222; }
+  li::marker { color: var(--grey); }
+  .compact li { margin-bottom: .3mm; }
+  .two { display:grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .skills p { margin-bottom: 1mm; } .skills b { font-weight: 600; }
+  /* --- template annotations (hidden in final render) --- */
+  [data-slot] { outline: 1.5px dashed #9acd00; outline-offset: 1.5mm; position: relative; }
+  [data-slot]::before { content: attr(data-slot); position:absolute; top:-3.6mm; right:0; font: 600 6pt ui-monospace, monospace;
+                        background: var(--strike); color:#000; padding: .3mm 1.2mm; letter-spacing:.06em; text-transform: uppercase; }
+  body.final [data-slot] { outline: none; } body.final [data-slot]::before { display:none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <h1>Essia Zarrouk</h1>
+      <p class="headline" data-slot="headline · per job">Product Manager · physical + digital products, from roadmap to launch</p>
+    </div>
+    <div class="contact">
+      Amsterdam, NL<br>
+      essiazarrouk.zarrouk2001@gmail.com<br>
+      +31 6 43 60 7222<br>
+      linkedin.com/in/essia-zarrouk<br>
+      <a href="https://essiazarroukzarrouk2001-alt.github.io/essia-portfolio">essiazarroukzarrouk2001-alt.github.io/essia-portfolio</a>
+    </div>
+  </header>
+
+  <section class="summary">
+    <h2>Profile</h2>
+    <p data-slot="summary · per job">Product manager who owns the whole arc, from requirements and build to production, launch and the numbers after. At NOWN I was assigned by the CEO to run Veil end to end, a manufactured ceiling system that ships with its own software configurator, and I now own the ASOFT Carve launch. Four years across agency and in-house, so go-to-market is part of the product, not a hand-off. Trilingual (English, Arabic, French), and at my best with a lot in motion.</p>
+  </section>
+
+  <section>
+    <h2>Selected work</h2>
+    <div class="proof" data-slot="3 proof points · chosen per job">
+      <div><b>Veil: product + configurator</b><span>Owned a physical system and its digital configurator end to end: requirements, developer management, design → production, go-to-market.</span></div>
+      <div><b>Search &amp; analytics audit</b><span>Found 83k monthly searches invisible to GA4, key conversion never tracked, ≈$7k wasted spend. Prioritised fixes, briefed devs, instrumented behavioural data.</span></div>
+      <div><b>Launch that moved demand</b><span>Staged omnichannel funnel for a new ASOFT colourway: +15% quote requests, ~+10% traffic, +8% / +5% audience growth.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="role">
+      <div class="role-head"><b>NOWN: Marketing &amp; Brand Manager · Product Owner, Veil &amp; ASOFT Carve</b><span class="meta">Jan 2025 – Present · Amsterdam</span></div>
+      <p class="sub">B2B design &amp; architecture studio (acoustic surfaces). Reporting to the CEO.</p>
+      <ul data-slot="bullet order + wording · per job">
+        <li><b>Veil, end-to-end Product Manager</b> (assigned by the CEO): drove a ceiling/wall system from design through production while managing the developer building its configurator; wrote the requirements that kept engineering aligned and owned every prioritisation call and deadline through launch.</li>
+        <li><b>ASOFT Carve, Product Owner</b> (32 patterns × 33 finishes): built the launch operating system: PRD and OKRs, JTBD positioning, MoSCoW scope, RICE-prioritised launch waves, Stage-Gate plan, RACI/DACI decision rights, RAID log and AARRR metrics.</li>
+        <li><b>Audited site search (Algolia) and GA4:</b> surfaced untracked conversions, source-less traffic and a misconfiguration costing ≈$2k/month; wrote developer briefs, set a spend cap, set UTM governance, and instrumented click data so search re-ranks on real behaviour.</li>
+        <li>Own brand strategy and EMEA positioning, including the rebrand; lead creative, web-dev and production teams; built and run the WordPress site; share budgeting with the CEO.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role-head"><b>EMG: Account Executive</b><span class="meta">Sep 2023 – Jan 2025 · Amsterdam</span></div>
+      <ul>
+        <li>Managed a portfolio of global B2B clients in chemicals, energy and industrials, including Mitsubishi, OQ and Songwon.</li>
+        <li>Stepped up above my title into budget allocation, utilisation tracking and pricing across accounts when my manager changed roles.</li>
+        <li>Ran simultaneous trade-show and campaign deliveries against timelines and KPIs; post-campaign reviews fed strategy.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role-head"><b>ChatLicense: Marketing &amp; Content Specialist</b><span class="meta">Mar 2023 – Sep 2023 · Rotterdam</span></div>
+      <ul>
+        <li>Worked inside the development team on a pre-launch digital-literacy app; ran user testing in schools across the Netherlands and fed findings back into the product before launch.</li>
+        <li>Built social and content strategy across LinkedIn, TikTok and in-app, driven by user insight and engagement data.</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div class="role-head"><b>Earlier</b><span class="meta">2021 – 2023</span></div>
+      <ul class="compact">
+        <li><b>Wright Brothers Flight Technology</b>, Marketing Executive: campaigns, events, post-campaign ROI analysis.</li>
+        <li><b>Joolz</b>, Branding &amp; Communications: brand and visual communication for a premium design-led brand.</li>
+        <li><b>World Fair Trade Organization</b>, Social Media Intern: global digital campaigns.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="skills" data-slot="skills · mirror posting keywords">
+      <h2>Skills &amp; tools</h2>
+      <p><b>Product:</b> roadmapping, PRDs and requirements, prioritisation (RICE, MoSCoW), user testing, JTBD, launch planning, stakeholder alignment (RACI/DACI)</p>
+      <p><b>Go-to-market:</b> positioning, campaign management, content, CRM, budgeting and pricing</p>
+      <p><b>Tools:</b> Notion, ClickUp, GA4, GTM, Algolia, Google Ads, SEMrush, HubSpot, MS Dynamics, WordPress, ActiveCampaign, Adobe CC, basic GitHub</p>
+    </div>
+    <div>
+      <h2>Education</h2>
+      <p><b>Erasmus University Rotterdam</b>: BSc International Media &amp; Communication (Media &amp; Business), 2019 – 2022</p>
+      <h2 style="margin-top:3mm">Languages</h2>
+      <p>English · Arabic · French</p>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
