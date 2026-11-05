@@ -73,6 +73,7 @@ B2B marketing agency.
 - Coordinated internal and external stakeholders to hit timelines and KPIs across simultaneous trade-show and campaign deliveries.
 - OQ: strategic narrative and message architecture for flagship industrial projects (Polymer Complex, Duqm Refinery, Salalah LPG & Ammonia), plus the "Energy Beyond Limits" work. Mitsubishi: messaging and spokesperson media training. Songwon: Google Ads, EcoVadis Platinum positioning. ClearCorrect and Westfalia: competitive research and recommendations. New-business pitching.
 - Digital marketing reports and post-campaign reviews.
+- Worked on the update of EMG's own website. **[CONFIRM: your part: content, structure, CMS, launch?]**
 
 ### ChatLicense: Marketing & Content Specialist · Mar 2023 – Sep 2023 · Rotterdam
 EdTech, a pre-launch digital-literacy app.
