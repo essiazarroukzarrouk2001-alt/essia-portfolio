@@ -108,6 +108,7 @@ Digital campaigns for global fair-trade initiatives.
 
 ## Personal (for "why this category" paragraphs only, when it's genuinely true)
 - Plant-based since age ten; founded the vegan society at Erasmus.
-- Grew up partly in Oman. The Al Jabal Al Akhdar **aflaj** story: read the terrain first, then channel the right things to where they need to go. (Personal-narrative opener, strong-fit roles only.)
+- Has lived in an international environment her whole life. School in Oman (Alshomoukh International School, British curriculum; graduated early). Moved to the Netherlands on her own before eighteen. (From the About page.)
+- Oman. The Al Jabal Al Akhdar **aflaj** story: read the terrain first, then channel the right things to where they need to go. (Personal-narrative opener, strong-fit roles only.)
 - Film lover, puzzler. Personal projects: Shabab ("Youth"), Casa Swana.
 - Value: accountability. "If I said I'd handle it, consider it handled, and if it goes sideways, you'll hear it from me first."
