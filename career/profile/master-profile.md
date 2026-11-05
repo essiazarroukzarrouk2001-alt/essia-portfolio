@@ -73,6 +73,8 @@ B2B marketing agency.
 - Coordinated internal and external stakeholders to hit timelines and KPIs across simultaneous trade-show and campaign deliveries.
 - OQ: strategic narrative and message architecture for flagship industrial projects (Polymer Complex, Duqm Refinery, Salalah LPG & Ammonia), plus the "Energy Beyond Limits" work. Mitsubishi: messaging and spokesperson media training. Songwon: Google Ads, EcoVadis Platinum positioning. ClearCorrect and Westfalia: competitive research and recommendations. New-business pitching.
 - Digital marketing reports and post-campaign reviews.
+- **OQ: "The Road to K Show" communications roadmap** (K is the world's largest plastics and rubber trade fair, Düsseldorf). Deck: 21 slides. Contents: a K planning calendar month by month (articles, PR releases, topics), executive LinkedIn profiles, K media training, an ongoing 40-post LinkedIn programme; the "Energy Beyond Limits" differentiation (Potential · Progress · Partnership); communication strategy; proposed PRs (growth story, alternative energy and sustainability); customer needs, market trends, industry challenges; a message house ("customers need to hear" vs "OQ wants to say"); proof points; a PR and media timeline; an always-on Announce / Amaze / Advance strategy; recommendations on people stories and sustainability storytelling. File kept privately (client confidential): `career/private/emg/`. **[CONFIRM: which K edition / year you worked on]**
+- Trade shows: NPE, ACS, Arabplast, GPCA, Fruit Attraction.
 - Worked on the update of EMG's own website. **[CONFIRM: your part: content, structure, CMS, launch?]**
 
 ### ChatLicense: Marketing & Content Specialist · Mar 2023 – Sep 2023 · Rotterdam
