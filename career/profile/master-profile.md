@@ -76,6 +76,11 @@ B2B marketing agency.
 
 ### ChatLicense: Marketing & Content Specialist · Mar 2023 – Sep 2023 · Rotterdam
 EdTech, a pre-launch digital-literacy app.
+- **Really acting Product Owner.** Start-up stage: the first and only employee, working directly with the co-founders. Built the product with them rather than running something that already existed.
+- Worked closely with the external agency that gamified the app: user flows and gamification, in **Figma**.
+- Creative direction with the animator.
+- Market research, **interviews with parents**, user tests.
+- ChatLicense was also a production company: worked on producing the shows and series (explainer and drama series, podcast).
 - **Worked inside the development team** on the pre-launch app. Took it into schools across the Netherlands to **user-test it herself** and fed findings straight back into the product before it shipped. (Build → test with real people → refine → repeat.)
 - Social and content strategy across LinkedIn, TikTok and in-app; brand voice for a young, digital-native audience; scripted explainer/drama series; podcast (full-stack production).
 
